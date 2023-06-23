@@ -2,6 +2,7 @@ package com.wyz.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wyz.common.R;
+import com.wyz.dto.FoundPasswordFormDTO;
 import com.wyz.dto.LoginFormDTO;
 import com.wyz.dto.RegisterFormDTO;
 import com.wyz.entity.User;
@@ -16,4 +17,6 @@ public interface UserService extends IService<User> {
     R<String> register(RegisterFormDTO registerForm, HttpSession session);
 
     R<String> loginByNickName(LoginFormDTO loginForm, HttpSession session);
+
+    R<String> foundPwd(FoundPasswordFormDTO foundPasswordFormDTO, HttpSession session);
 }

@@ -7,6 +7,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.R;
+import com.wyz.dto.FoundPasswordFormDTO;
 import com.wyz.dto.LoginFormDTO;
 import com.wyz.dto.RegisterFormDTO;
 import com.wyz.dto.UserDTO;
@@ -246,6 +247,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         //这里将token返回给前端后，前端会自动缓存起来
         return R.success(token);
+    }
+
+    @Override
+    public R<String> foundPwd(FoundPasswordFormDTO foundPasswordFormDTO, HttpSession session) {
+        if(StrUtil.isEmpty(foundPasswordFormDTO.getPhone())
+                ||StrUtil.isEmpty(foundPasswordFormDTO.getCode())
+                ||StrUtil.isEmpty(foundPasswordFormDTO.getNewPassword())){
+            return R.error("请将信息补充完整");
+        }
+
+        //1.校验手机号
+        String phone = foundPasswordFormDTO.getPhone();
+//        boolean codeInvalid = RegexUtils.isCodeInvalid(phone);
+//        if(codeInvalid){
+//            //2.如果不符合，返回错误信息
+//            return Result.fail("手机号格式错误");
+//        }
+        //2.校验验证码  从redis中获取
+        String cacheCode=stringRedisTemplate.opsForValue().get("code:"+phone);
+        String code = foundPasswordFormDTO.getCode(); //这是前端传过来的code
+        if(cacheCode==null || !cacheCode.equals(code)){ //这里采用反向校验
+            //3.不一致，报错
+            return R.error("验证码错误");
+        }
+        //4.一致,根据手机号查询用户
+        User user = query().eq("phone", phone).one();
+
+        //用户不存在
+        if(user==null){
+            return R.error("用户不存在");
+        }
+        user.setPassword(DigestUtils.md5DigestAsHex(foundPasswordFormDTO.getNewPassword().getBytes()));
+        updateById(user);
+        return R.success("修改密码成功");
     }
 
     //----------------------------------------------------------------------------------

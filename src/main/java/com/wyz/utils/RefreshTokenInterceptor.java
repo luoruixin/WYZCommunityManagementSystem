@@ -2,6 +2,7 @@ package com.wyz.utils;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.wyz.common.BaseContext_ThreadLocalHandler;
 import com.wyz.dto.UserDTO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -47,6 +48,8 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         UserDTO userDTO = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
         // 5.存在，保存用户信息到ThreadLocal
         UserHolder.saveUser(userDTO);
+        // TODO:下面这个代码记得删除
+//        BaseContext_ThreadLocalHandler.setCurrentId(userDTO.getId());
         //刷新token有效期,否则有效期会过时
         stringRedisTemplate.expire("login:token:" + token, 30,TimeUnit.MINUTES);
         //6.放行

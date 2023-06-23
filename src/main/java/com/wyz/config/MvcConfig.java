@@ -37,6 +37,8 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/user/loginByNickName",
                         "/user/loginByPhone",
                         "/user/register"
+//                        下面这个是为了方便测试
+                        ,"/**"
                 ).order(1);
         //token刷新的拦截器，下面的拦截器会拦截所有请求,下面拦截器的order(0)表示优先级更高
         registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);

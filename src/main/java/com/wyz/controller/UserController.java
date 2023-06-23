@@ -1,6 +1,8 @@
 package com.wyz.controller;
 
+import com.wyz.common.BaseContext_ThreadLocalHandler;
 import com.wyz.common.R;
+import com.wyz.dto.FoundPasswordFormDTO;
 import com.wyz.dto.LoginFormDTO;
 import com.wyz.dto.RegisterFormDTO;
 import com.wyz.dto.UserDTO;
@@ -45,7 +47,7 @@ public class UserController {
             return userService.loginByPhone(loginForm,session);
         }
         catch (Exception e){
-            return R.error("登录失败");
+            return R.error(null);
         }
     }
 
@@ -58,7 +60,7 @@ public class UserController {
         try {
             return userService.loginByNickName(loginForm,session);
         }catch (Exception e){
-            return R.error("登录失败");
+            return R.error(null);
         }
     }
 
@@ -75,6 +77,15 @@ public class UserController {
             return userService.register(registerForm,session);
         }catch (Exception e){
             return R.error("注册失败");
+        }
+    }
+
+    @PutMapping("/foundPwd")
+    public R<String> foundPwd(@RequestBody FoundPasswordFormDTO foundPasswordFormDTO, HttpSession session){
+        try {
+            return userService.foundPwd(foundPasswordFormDTO,session);
+        }catch (Exception e){
+            return R.error("找回密码失败");
         }
     }
 }
