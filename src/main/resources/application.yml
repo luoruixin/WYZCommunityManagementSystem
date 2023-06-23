@@ -16,7 +16,16 @@ spring:
       max-request-size: 20MB
   main:
     allow-bean-definition-overriding: true  #允许datasource这个bean被重复定义
-
+  redis:
+    host: localhost
+    port: 6379
+    password: 1234
+    lettuce: #连接池配置
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
 
 #  shardingsphere:
 #    datasource:
