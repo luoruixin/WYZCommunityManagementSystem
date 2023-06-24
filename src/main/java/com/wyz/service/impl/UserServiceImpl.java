@@ -5,22 +5,31 @@ import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.R;
 import com.wyz.dto.*;
+import com.wyz.entity.FamilyRelationship;
 import com.wyz.entity.User;
+import com.wyz.entity.UserRecord;
 import com.wyz.mapper.UserMapper;
+import com.wyz.service.FamilyRelationshipService;
+import com.wyz.service.UserRecordService;
 import com.wyz.service.UserService;
 import com.wyz.utils.RegexUtils;
 import com.wyz.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +44,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private UserRecordService userRecordService;
+
+    @Autowired
+    private FamilyRelationshipService familyRelationshipService;
 
     //发送验证码
     @Override
@@ -175,7 +190,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         //用户已经存在
         if(user!=null){
-            return R.error("该用户已经存在");
+            return R.error("该手机号已经被绑定");
         }else {
             // 6.不存在,注册
             user=new User();
@@ -261,6 +276,81 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return R.success("绑定手机号成功");
     }
 
+    //TODO:实名认证功能完善
+    @Override
+    @Transactional  //这里要同时操纵user和userRecord表
+    public R<String> realNameIdentify(RealNameFormDTO realNameFormDTO, HttpSession session) {
+        String realName=realNameFormDTO.getName();
+        String idCard=realNameFormDTO.getIdCard();
+        if(StrUtil.isEmpty(realName)||StrUtil.isEmpty(idCard)){
+            return R.error("请将信息填充完整");
+        }
+        if(query().eq("id_card", idCard).one()!=null){
+            return R.error("该身份证已经被绑定");
+        }
+        UserDTO userDTO=UserHolder.getUser();
+        User user=new User();
+        BeanUtil.copyProperties(userDTO,user);
+        user.setName(realName);
+        user.setIdCard(idCard);
+        FamilyRelationship familyRelationship = familyRelationshipService.query().eq("id_card", idCard).one();
+        if(familyRelationship==null){
+            //familyRelationship表中没有其idcard，表示他是业主
+            user.setType(1);
+            user.setExamine(0);
+        }else {
+            //如果familyRelationship表中有其idcard，表示业主已经将其拉入到家庭中了
+            //此时只需要填写其FamilyId即可
+            user.setType(0);
+            user.setExamine(1);  //这是在其业主已经绑定了房屋之后才能拉入家庭，所以直接设置为 1
+            familyRelationship.setFamilyId(user.getId());
+            familyRelationshipService.updateById(familyRelationship);
+        }
+        updateById(user);
+
+        //实名认证后要将信息插入userRecord表
+        UserRecord userRecord1=userRecordService.query().eq("id_card",idCard).one();
+        if(userRecord1!=null){
+            //表示userRecord里面已经有记录了，该用户以前已经注销过
+            //只需要将userRecord
+            if(userRecord1.getOutTime()!=null){
+                //这里做二次校验
+                return R.error("该身份证已经被绑定");
+            }
+            userRecord1.setOutTime(null);
+            userRecord1.setUsername(user.getNickname());
+            userRecord1.setTime(LocalDateTime.now());
+            userRecord1.setPhone(user.getPhone());
+            userRecord1.setName(realName);
+            userRecordService.updateById(userRecord1);
+            return R.success("实名认证成功");
+        }
+
+        UserRecord userRecord=new UserRecord();
+        userRecord.setName(realName);
+        userRecord.setIdCard(idCard);
+        userRecord.setPhone(user.getPhone());
+        userRecord.setTime(LocalDateTime.now());
+        userRecord.setUsername(user.getNickname());
+        userRecordService.save(userRecord);
+        return R.success("实名认证成功");
+    }
+
+    @Override
+    @Transactional
+    public R<String> writeOff() {
+        UserDTO userDTO = UserHolder.getUser();
+        if(userDTO==null){
+            return R.error("请先登录");
+        }
+        User user=query().eq("id",userDTO.getId()).one();
+        UserRecord userRecord = userRecordService.query().eq("id_card", user.getIdCard()).one();
+        if(userRecord!=null){
+            userRecord.setOutTime(LocalDateTime.now());
+        }
+        removeById(userDTO.getId());
+        return R.success("注销成功");
+    }
 
     //-----------------------------------工具类-----------------------------------------------
 

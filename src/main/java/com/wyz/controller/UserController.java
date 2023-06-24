@@ -4,6 +4,7 @@ import com.wyz.common.BaseContext_ThreadLocalHandler;
 import com.wyz.common.R;
 import com.wyz.dto.*;
 import com.wyz.entity.User;
+import com.wyz.service.UserRecordService;
 import com.wyz.service.UserService;
 import com.wyz.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     @Autowired
     private UserService userService;
+
 
     /**
      * 发送手机验证码
@@ -60,6 +62,21 @@ public class UserController {
             return R.error("登录失败");
         }
     }
+
+    /**
+     * 登出功能
+     */
+    @PostMapping("/loginOut")
+    public R<String> loginOut(){
+        try {
+            UserHolder.removeUser();
+            return R.success("登出成功");
+        }
+        catch (Exception e){
+            return R.error("登录失败");
+        }
+    }
+
 
     //查询自己的信息
     @GetMapping("/me")
@@ -105,6 +122,26 @@ public class UserController {
             return userService.updatePhone(updatePhoneFormDTO,session);
         }catch (Exception e){
             return R.error("修改绑定手机号失败");
+        }
+    }
+
+    //实名认证
+    @PostMapping("/realNameIdentify")
+    public R<String> realNameIdentify(@RequestBody RealNameFormDTO realNameFormDTO, HttpSession session){
+        try {
+            return userService.realNameIdentify(realNameFormDTO,session);
+        }catch (Exception e){
+            return R.error("实名认证失败");
+        }
+    }
+
+    //注销功能
+    @DeleteMapping("/writeOff")
+    public R<String> writeOff(){
+        try {
+            return userService.writeOff();
+        }catch (Exception e){
+            return R.error("注销失败");
         }
     }
 }

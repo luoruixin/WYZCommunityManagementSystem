@@ -16,4 +16,8 @@ public class FamilyRelationship {
     private Long userId;
     @TableField(value = "relation")
     private String relation;
+    @TableField(value = "name")
+    private String name;
+    @TableField(value = "id_card")
+    private String idCard;
 }

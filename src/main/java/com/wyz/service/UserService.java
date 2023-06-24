@@ -21,4 +21,8 @@ public interface UserService extends IService<User> {
     R<String> updatePwd(UpdatePwdFormDTO updatePwdFormDTO, HttpSession session);
 
     R<String> updatePhone(UpdatePhoneFormDTO updatePhoneFormDTO, HttpSession session);
+
+    R<String> realNameIdentify(RealNameFormDTO realNameFormDTO, HttpSession session);
+
+    R<String> writeOff();
 }
