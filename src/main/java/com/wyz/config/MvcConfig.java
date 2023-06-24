@@ -36,7 +36,8 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/user/code",
                         "/user/loginByNickName",
                         "/user/loginByPhone",
-                        "/user/register"
+                        "/user/register",
+                        "/user/foundPwd"
 //                        下面这个是为了方便测试
                         ,"/**"
                 ).order(1);

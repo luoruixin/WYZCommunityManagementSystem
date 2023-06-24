@@ -2,10 +2,7 @@ package com.wyz.controller;
 
 import com.wyz.common.BaseContext_ThreadLocalHandler;
 import com.wyz.common.R;
-import com.wyz.dto.FoundPasswordFormDTO;
-import com.wyz.dto.LoginFormDTO;
-import com.wyz.dto.RegisterFormDTO;
-import com.wyz.dto.UserDTO;
+import com.wyz.dto.*;
 import com.wyz.entity.User;
 import com.wyz.service.UserService;
 import com.wyz.utils.UserHolder;
@@ -84,6 +81,15 @@ public class UserController {
     public R<String> foundPwd(@RequestBody FoundPasswordFormDTO foundPasswordFormDTO, HttpSession session){
         try {
             return userService.foundPwd(foundPasswordFormDTO,session);
+        }catch (Exception e){
+            return R.error("找回密码失败");
+        }
+    }
+
+    @PutMapping("/updatePwd")
+    public R<String> updatePwd(@RequestBody UpdatePwdFormDTO updatePwdFormDTO, HttpSession session){
+        try {
+            return userService.updatePwd(updatePwdFormDTO,session);
         }catch (Exception e){
             return R.error("找回密码失败");
         }

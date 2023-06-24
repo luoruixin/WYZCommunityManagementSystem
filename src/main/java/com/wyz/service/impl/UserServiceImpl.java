@@ -7,14 +7,12 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.R;
-import com.wyz.dto.FoundPasswordFormDTO;
-import com.wyz.dto.LoginFormDTO;
-import com.wyz.dto.RegisterFormDTO;
-import com.wyz.dto.UserDTO;
+import com.wyz.dto.*;
 import com.wyz.entity.User;
 import com.wyz.mapper.UserMapper;
 import com.wyz.service.UserService;
 import com.wyz.utils.RegexUtils;
+import com.wyz.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -279,6 +277,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return R.error("用户不存在");
         }
         user.setPassword(DigestUtils.md5DigestAsHex(foundPasswordFormDTO.getNewPassword().getBytes()));
+        updateById(user);
+        return R.success("修改密码成功");
+    }
+
+    @Override
+    public R<String> updatePwd(UpdatePwdFormDTO updatePwdFormDTO, HttpSession session) {
+        if(StrUtil.isEmpty(updatePwdFormDTO.getOldPassword())||StrUtil.isEmpty(updatePwdFormDTO.getNewPassword())){
+            return R.error("请将信息补充完整");
+        }
+        String oldPassword = updatePwdFormDTO.getOldPassword();
+        //4.一致,根据手机号查询用户
+        UserDTO userDTO = UserHolder.getUser();
+        User user = getById(userDTO.getId());
+
+        //用户不存在
+        if(user==null){
+            return R.error("用户不存在");
+        }
+        //判断密码是否正确
+        if(!DigestUtils.md5DigestAsHex(oldPassword.getBytes()).equals(user.getPassword())){
+            return R.error("原密码输入错误");
+        }
+        user.setPassword(DigestUtils.md5DigestAsHex(updatePwdFormDTO.getNewPassword().getBytes()));
         updateById(user);
         return R.success("修改密码成功");
     }
