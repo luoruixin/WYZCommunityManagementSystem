@@ -2,10 +2,7 @@ package com.wyz.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wyz.common.R;
-import com.wyz.dto.FoundPasswordFormDTO;
-import com.wyz.dto.LoginFormDTO;
-import com.wyz.dto.RegisterFormDTO;
-import com.wyz.dto.UpdatePwdFormDTO;
+import com.wyz.dto.*;
 import com.wyz.entity.User;
 
 import javax.servlet.http.HttpSession;
@@ -22,4 +19,6 @@ public interface UserService extends IService<User> {
     R<String> foundPwd(FoundPasswordFormDTO foundPasswordFormDTO, HttpSession session);
 
     R<String> updatePwd(UpdatePwdFormDTO updatePwdFormDTO, HttpSession session);
+
+    R<String> updatePhone(UpdatePhoneFormDTO updatePhoneFormDTO, HttpSession session);
 }

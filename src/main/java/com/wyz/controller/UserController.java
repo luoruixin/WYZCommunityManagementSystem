@@ -44,7 +44,7 @@ public class UserController {
             return userService.loginByPhone(loginForm,session);
         }
         catch (Exception e){
-            return R.error(null);
+            return R.error("登录失败");
         }
     }
 
@@ -57,7 +57,7 @@ public class UserController {
         try {
             return userService.loginByNickName(loginForm,session);
         }catch (Exception e){
-            return R.error(null);
+            return R.error("登录失败");
         }
     }
 
@@ -68,6 +68,7 @@ public class UserController {
         return R.success(user);
     }
 
+    //注册功能
     @PostMapping("/register")
     public R<String> register(@RequestBody RegisterFormDTO registerForm, HttpSession session){
         try {
@@ -77,6 +78,7 @@ public class UserController {
         }
     }
 
+    //找回密码
     @PutMapping("/foundPwd")
     public R<String> foundPwd(@RequestBody FoundPasswordFormDTO foundPasswordFormDTO, HttpSession session){
         try {
@@ -86,12 +88,23 @@ public class UserController {
         }
     }
 
+    //修改密码
     @PutMapping("/updatePwd")
     public R<String> updatePwd(@RequestBody UpdatePwdFormDTO updatePwdFormDTO, HttpSession session){
         try {
             return userService.updatePwd(updatePwdFormDTO,session);
         }catch (Exception e){
-            return R.error("找回密码失败");
+            return R.error("修改密码失败");
+        }
+    }
+
+    //修改绑定的手机号
+    @PutMapping("/updatePhone")
+    public R<String> updatePhone(@RequestBody UpdatePhoneFormDTO updatePhoneFormDTO, HttpSession session){
+        try {
+            return userService.updatePhone(updatePhoneFormDTO,session);
+        }catch (Exception e){
+            return R.error("修改绑定手机号失败");
         }
     }
 }
