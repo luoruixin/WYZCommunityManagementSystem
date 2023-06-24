@@ -23,6 +23,10 @@ public class FamilyRelationshipServiceImpl extends ServiceImpl<FamilyRelationshi
             return R.error("请将信息补充完整");
         }
         FamilyRelationship familyRelationship=new FamilyRelationship();
+        if(UserHolder.getUser().getExamine()==0)
+        {
+            return R.error("您还未进行房屋绑定");
+        }
         familyRelationship.setUserId(UserHolder.getUser().getId());
         familyRelationship.setName(addFamilyFormDTO.getName());
         familyRelationship.setIdCard(addFamilyFormDTO.getIdCard());

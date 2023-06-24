@@ -25,4 +25,10 @@ public interface UserService extends IService<User> {
     R<String> realNameIdentify(RealNameFormDTO realNameFormDTO, HttpSession session);
 
     R<String> writeOff();
+
+    R<String> judgeResidentEntrance();
+
+    R<String> judgeOtherPermissions();
+
+    R<String> judgeVotePermissions();
 }

@@ -144,4 +144,34 @@ public class UserController {
             return R.error("注销失败");
         }
     }
+
+    //判断是否有进入居民入口的权限
+    @PostMapping("/judgeResidentEntrance")
+    public R<String> judgeResidentEntrance(){
+        try {
+            return userService.judgeResidentEntrance();
+        }catch (Exception e){
+            return R.error("进入失败");
+        }
+    }
+
+    //判断是否有除了投票之外的所有权限
+    @PostMapping("/judgeOtherPermissions")
+    public R<String> judgeOtherPermissions(){
+        try {
+            return userService.judgeOtherPermissions();
+        }catch (Exception e){
+            return R.error("网络繁忙，请重试");
+        }
+    }
+
+    //判断是否有除了投票之外的所有权限
+    @PostMapping("/judgeVotePermissions")
+    public R<String> judgeVotePermissions(){
+        try {
+            return userService.judgeVotePermissions();
+        }catch (Exception e){
+            return R.error("网络繁忙，请重试");
+        }
+    }
 }

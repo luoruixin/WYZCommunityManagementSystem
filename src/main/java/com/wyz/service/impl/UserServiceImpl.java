@@ -1,11 +1,9 @@
 package com.wyz.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.R;
 import com.wyz.dto.*;
@@ -16,6 +14,7 @@ import com.wyz.mapper.UserMapper;
 import com.wyz.service.FamilyRelationshipService;
 import com.wyz.service.UserRecordService;
 import com.wyz.service.UserService;
+import com.wyz.utils.PermissionJudge;
 import com.wyz.utils.RegexUtils;
 import com.wyz.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
-import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -35,7 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import static com.wyz.utils.RedisConstants.LOGIN_CODE_KEY;
 import static com.wyz.utils.RedisConstants.LOGIN_USER_TTL;
 
 @Service
@@ -180,15 +177,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if(!verificatePhoneAndCode(phone,code)){ //这里采用反向校验
             //3.不一致，报错
-            return R.error("验证码错误或手机号格式错误");
+            return R.error("验证码错误或手机号错误");
         }
-        //4.一致,根据手机号查询用户
-        User user = query().eq("phone", phone).one();
+
         if(query().eq("username",registerForm.getNickname()).one()!=null){
             return R.error("该用户名已经被注册，请更换用户名");
         }
-
-        //用户已经存在
+        //4.一致,根据手机号查询用户
+        User user = query().eq("phone", phone).one();
         if(user!=null){
             return R.error("该手机号已经被绑定");
         }else {
@@ -352,6 +348,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return R.success("注销成功");
     }
 
+    @Override
+    public R<String> judgeResidentEntrance() {
+        UserDTO user = UserHolder.getUser();
+        Integer type = user.getType();
+        Integer examine = user.getExamine();
+        if (PermissionJudge.judgeAuthority(type,examine)>0) {
+            return R.success("欢迎进入居民入口");
+        }
+        return R.error("您没有权限进入居民入口");
+    }
+
+    @Override
+    public R<String> judgeOtherPermissions() {
+        UserDTO user = UserHolder.getUser();
+        Integer type = user.getType();
+        Integer examine = user.getExamine();
+        if (PermissionJudge.judgeAuthority(type,examine)>1) {
+            //TODO:前端进行页面跳转时不用弹窗显示“欢迎”
+            return R.success("欢迎");
+        }
+        return R.error("您没有权限");
+    }
+
+    @Override
+    public R<String> judgeVotePermissions() {
+        UserDTO user = UserHolder.getUser();
+        Integer type = user.getType();
+        Integer examine = user.getExamine();
+        if (PermissionJudge.judgeAuthority(type,examine)>2) {
+            return R.success("欢迎");
+        }
+        return R.error("您没有权限");
+    }
+
     //-----------------------------------工具类-----------------------------------------------
 
     private boolean verificatePhoneAndCode(String phone,String code){
@@ -364,11 +394,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //2.校验验证码  从redis中获取
         String cacheCode=stringRedisTemplate.opsForValue().get("code:"+phone);
         //这是前端传过来的code
-        if(cacheCode==null ||!cacheCode.equals(code)){ //这里采用反向校验
-            //3.不一致，报错
-            return false;
-        }
-        return true;
+        //这里采用反向校验
+        //3.不一致，报错
+        return cacheCode != null && cacheCode.equals(code);
     }
 
     //将userDto映射到map的工具类
