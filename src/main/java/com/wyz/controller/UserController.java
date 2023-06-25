@@ -22,7 +22,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
     /**
      * 发送手机验证码
      */
@@ -81,8 +80,14 @@ public class UserController {
     //查询自己的信息
     @GetMapping("/me")
     public R<UserDTO> me(){
-        UserDTO user = UserHolder.getUser();
-        return R.success(user);
+        try {
+            UserDTO user = UserHolder.getUser();
+            user.setPhone("*******"+user.getPhone().substring(user.getPhone().length() - 4));
+            return R.success(user);
+        }catch (Exception e){
+            return R.error("请先登录，请重试");
+        }
+
     }
 
     //注册功能
