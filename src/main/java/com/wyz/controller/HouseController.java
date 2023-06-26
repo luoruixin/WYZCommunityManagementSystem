@@ -2,19 +2,15 @@ package com.wyz.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wyz.common.HouseJson;
+import com.wyz.dto.HouseJsonByLevel;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.dto.BindHouseFormDTO;
 import com.wyz.entity.House;
 import com.wyz.service.HouseService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -36,7 +32,7 @@ public class HouseController {
 
     //房屋的分级查询
     @GetMapping("/selectByLevel")
-    public R<HouseJson> selectByLevel(){
+    public R<HouseJsonByLevel> selectByLevel(){
         try{
             return houseService.selectByLevel();
         }catch (Exception e){
@@ -62,10 +58,13 @@ public class HouseController {
 
         //构造条件构造器
         LambdaQueryWrapper<House> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(House::getUserId,UserHolder.getUser().getId());
+        queryWrapper.eq(House::getUserId,UserHolder.getUser().getId())
+                .isNotNull(House::getUserId);
 
         houseService.page(pageInfo,queryWrapper);
 
         return R.success(pageInfo);
     }
+
+
 }

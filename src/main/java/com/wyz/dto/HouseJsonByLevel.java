@@ -1,11 +1,11 @@
-package com.wyz.common;
+package com.wyz.dto;
 
 import lombok.Data;
 
 import java.util.Map;
 
 @Data
-public class HouseJson {
+public class HouseJsonByLevel {
 
     private Map<String, Area> areas;
 

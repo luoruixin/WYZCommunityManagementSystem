@@ -1,12 +1,10 @@
 package com.wyz.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wyz.common.HouseJson;
+import com.wyz.dto.HouseJsonByLevel;
 import com.wyz.common.R;
 import com.wyz.dto.BindHouseFormDTO;
-import com.wyz.dto.UserDTO;
 import com.wyz.entity.House;
 import com.wyz.entity.HouseRecord;
 import com.wyz.mapper.HouseMapper;
@@ -62,10 +60,10 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 
     // TODO：该返回值使用redis缓存起来
     @Override
-    public R<HouseJson> selectByLevel() {
+    public R<HouseJsonByLevel> selectByLevel() {
         List<House> houses = query().isNull("user_id").orderByAsc("num").list();
-        HouseJson houseJson = new HouseJson();
-        Map<String, HouseJson.Area> areaMap = new HashMap<>();
+        HouseJsonByLevel houseJsonByLevel = new HouseJsonByLevel();
+        Map<String, HouseJsonByLevel.Area> areaMap = new HashMap<>();
 
         for (House house : houses) {
             String area = house.getArea();
@@ -73,33 +71,33 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
             String cell = house.getCell();
             String houseCode = house.getHouseCode();
 
-            HouseJson.Area areaObj = areaMap.get(area);
+            HouseJsonByLevel.Area areaObj = areaMap.get(area);
             if (areaObj == null) {
-                areaObj = new HouseJson.Area();
+                areaObj = new HouseJsonByLevel.Area();
                 areaMap.put(area, areaObj);
             }
 
-            Map<String, HouseJson.Apart> apartMap = areaObj.getAparts();
+            Map<String, HouseJsonByLevel.Apart> apartMap = areaObj.getAparts();
             if (apartMap == null) {
                 apartMap = new HashMap<>();
                 areaObj.setAparts(apartMap);
             }
 
-            HouseJson.Apart apartObj = apartMap.get(apart);
+            HouseJsonByLevel.Apart apartObj = apartMap.get(apart);
             if (apartObj == null) {
-                apartObj = new HouseJson.Apart();
+                apartObj = new HouseJsonByLevel.Apart();
                 apartMap.put(apart, apartObj);
             }
 
-            Map<String, HouseJson.Cell> cellMap = apartObj.getCells();
+            Map<String, HouseJsonByLevel.Cell> cellMap = apartObj.getCells();
             if (cellMap == null) {
                 cellMap = new HashMap<>();
                 apartObj.setCells(cellMap);
             }
 
-            HouseJson.Cell cellObj = cellMap.get(cell);
+            HouseJsonByLevel.Cell cellObj = cellMap.get(cell);
             if (cellObj == null) {
-                cellObj = new HouseJson.Cell();
+                cellObj = new HouseJsonByLevel.Cell();
                 cellObj.setCodes(new String[]{});
                 cellMap.put(cell, cellObj);
             }
@@ -110,11 +108,12 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
             cellObj.setCodes(newCodes);
         }
 
-        houseJson.setAreas(areaMap);
-        return R.success(houseJson);
+        houseJsonByLevel.setAreas(areaMap);
+        return R.success(houseJsonByLevel);
     }
 
     @Override
+    @Transactional
     public R<String> deleteHouse(String houseId) {
         if(StrUtil.isEmpty(houseId)){
             return R.error("id为空");

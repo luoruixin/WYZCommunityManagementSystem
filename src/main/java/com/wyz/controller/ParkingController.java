@@ -1,12 +1,69 @@
 package com.wyz.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wyz.common.R;
+import com.wyz.common.UserHolder;
+import com.wyz.dto.ParkingJsonByLevel;
+import com.wyz.entity.House;
+import com.wyz.entity.Parking;
+import com.wyz.service.ParkingService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/parking")
 public class ParkingController {
+    @Autowired
+    private ParkingService parkingService;
+
+    //添加车位
+    @PostMapping("/add")
+    public R<String> add(@RequestBody Parking parking){
+        try {
+            return parkingService.add(parking);
+        }catch (Exception e){
+            return R.error("网络繁忙，请重试");
+        }
+    }
+
+    //查询还未被绑定的车位
+    @GetMapping("/selectUnused")
+    public R<ParkingJsonByLevel> selectUnused(){
+        try {
+            return parkingService.selectUnused();
+        }catch (Exception e){
+            return R.error("网络繁忙，请重试");
+        }
+    }
+
+    //删除车位
+    @DeleteMapping("/delete")
+    public R<String> delete(@RequestParam String id){
+        try {
+            return parkingService.delete(id);
+        }catch (Exception e){
+            return R.error("网络繁忙，请重试");
+        }
+    }
+
+    //分页查询
+    @GetMapping("/page")
+    public R<Page> pageR(int page,int pageSize){
+        //构造分页构造器对象
+        Page<Parking> pageInfo=new Page<>(page,pageSize);
+
+        //构造条件构造器
+        LambdaQueryWrapper<Parking> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserHolder.getUser().getId()!=null,Parking::getUserId, UserHolder.getUser().getId())
+                .isNotNull(Parking::getUserId);
+
+        parkingService.page(pageInfo,queryWrapper);
+
+        return R.success(pageInfo);
+    }
 }
