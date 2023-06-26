@@ -1,8 +1,7 @@
 package com.wyz.config;
 
 import com.wyz.common.JacksonObjectMapper;
-import com.wyz.utils.LoginInterceptor;
-import com.wyz.utils.RefreshTokenInterceptor;
+import com.wyz.interceptor.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +26,11 @@ public class MvcConfig implements WebMvcConfigurer {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    //配置拦截器
+    //TODO:完善拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        //token刷新的拦截器，下面的拦截器会拦截所有请求,下面拦截器的order(0)表示优先级更高
+        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
         //登录拦截器
         registry.addInterceptor(new LoginInterceptor())
                 .excludePathPatterns(
@@ -39,10 +40,29 @@ public class MvcConfig implements WebMvcConfigurer {
                         "/user/register",
                         "/user/foundPwd"
 //                        下面这个是为了方便测试
-                        ,"/**"
+//                        ,"/**"
                 ).order(1);
-        //token刷新的拦截器，下面的拦截器会拦截所有请求,下面拦截器的order(0)表示优先级更高
-        registry.addInterceptor(new RefreshTokenInterceptor(stringRedisTemplate)).addPathPatterns("/**").order(0);
+
+        //下面的几个拦截器是互斥的关系，为了提升性能
+        registry.addInterceptor(new HandleHouseInterceptor()).addPathPatterns(
+                "/house/**"
+
+        ).order(2);
+        registry.addInterceptor(new HandleOtherInterceptor()).addPathPatterns(
+                "/car/**",
+                "/parking/**",
+                "/problem/**",
+                "/complain/**"
+        ).order(3);
+        registry.addInterceptor(new HandleVoteInterceptor()).addPathPatterns(
+                "/familyRelationship/**",
+                "/vote/**"
+        ).order(4);
+        registry.addInterceptor(new HandleCommttieeInterceptor()).addPathPatterns(
+                "/CommitteeComplain/**",
+                "/committeeProblem/**",
+                "/committeeVote/**"
+        ).order(5);
     }
 
     /**

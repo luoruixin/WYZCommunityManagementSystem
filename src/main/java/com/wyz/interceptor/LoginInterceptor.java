@@ -1,4 +1,4 @@
-package com.wyz.utils;
+package com.wyz.interceptor;
 
 import com.wyz.common.UserHolder;
 import org.springframework.web.servlet.HandlerInterceptor;

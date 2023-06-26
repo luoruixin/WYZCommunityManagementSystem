@@ -13,7 +13,7 @@ public class PermissionJudge {
             return 1;
         } else if (type==0&&examine==1) {
             //表示这是普通居民，并且其业主已经绑定房屋
-            //此时除了投票权限其他权限都有(可以点击车辆管理等按钮)
+            //此时除了投票权限和添加家人的权限之外其他权限都有(可以点击车辆管理等按钮)
             return 2;
         }else if (type==1&&examine==1){
             //表示这是业主，并且已经绑定房屋

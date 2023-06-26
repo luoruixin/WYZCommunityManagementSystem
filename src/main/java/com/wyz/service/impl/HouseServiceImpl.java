@@ -1,13 +1,18 @@
 package com.wyz.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.dto.HouseJsonByLevel;
 import com.wyz.common.R;
 import com.wyz.dto.BindHouseFormDTO;
+import com.wyz.dto.UserDTO;
 import com.wyz.entity.House;
 import com.wyz.entity.HouseRecord;
+import com.wyz.entity.User;
 import com.wyz.mapper.HouseMapper;
+import com.wyz.service.FamilyRelationshipService;
 import com.wyz.service.HouseRecordService;
 import com.wyz.service.HouseService;
 import com.wyz.service.UserService;
@@ -26,6 +31,8 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     private HouseRecordService houseRecordService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private FamilyRelationshipService familyRelationshipService;
     @Override
     @Transactional  //这里要操纵house和houseRecord两张表
     public R<String> bindHouse(BindHouseFormDTO bindHouseFormDTO) {
@@ -135,6 +142,39 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         houseRecordService.updateById(houseRecord);
 
         return R.success("删除成功");
+    }
+
+    @Override
+    @Transactional
+    public R<Page> pageR(int page, int pageSize) {
+        //构造分页构造器对象
+        Page<House> pageInfo=new Page<>(page,pageSize);
+
+        //构造条件构造器
+        LambdaQueryWrapper<House> queryWrapper=new LambdaQueryWrapper<>();
+        UserDTO currentUser = UserHolder.getUser();
+
+
+        if(currentUser.getType()==0&&currentUser.getExamine()==1){
+            //该情况出现在家人来查询的情况
+
+            Long ownerId = familyRelationshipService.query().eq("family_id", currentUser.getId()).one().getUserId();
+            if(ownerId==null){
+                return R.error(null);
+            }
+            queryWrapper.eq(House::getUserId,ownerId)
+                    .isNotNull(House::getUserId);
+
+            page(pageInfo,queryWrapper);
+
+            return R.success(pageInfo);
+        }
+        queryWrapper.eq(House::getUserId,currentUser.getId())
+                .isNotNull(House::getUserId);
+
+        page(pageInfo,queryWrapper);
+
+        return R.success(pageInfo);
     }
 
 }

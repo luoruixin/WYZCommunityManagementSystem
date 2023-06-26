@@ -6,6 +6,7 @@ import com.wyz.dto.HouseJsonByLevel;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.dto.BindHouseFormDTO;
+import com.wyz.dto.UserDTO;
 import com.wyz.entity.House;
 import com.wyz.service.HouseService;
 import lombok.extern.slf4j.Slf4j;
@@ -53,17 +54,11 @@ public class HouseController {
     //分页查询
     @GetMapping("/page")
     public R<Page> pageR(int page, int pageSize){
-        //构造分页构造器对象
-        Page<House> pageInfo=new Page<>(page,pageSize);
-
-        //构造条件构造器
-        LambdaQueryWrapper<House> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(House::getUserId,UserHolder.getUser().getId())
-                .isNotNull(House::getUserId);
-
-        houseService.page(pageInfo,queryWrapper);
-
-        return R.success(pageInfo);
+        try{
+            return houseService.pageR(page,pageSize);
+        }catch (Exception e){
+            return R.error("房屋删除失败，请重试");
+        }
     }
 
 

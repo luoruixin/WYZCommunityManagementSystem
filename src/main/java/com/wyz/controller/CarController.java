@@ -56,5 +56,13 @@ public class CarController {
         return R.success(pageInfo);
     }
 
-    //
+    //修改车辆信息
+    @PutMapping("/update")
+    public R<String> update(@RequestBody Car car){
+        try {
+            return carService.updateCar(car);
+        }catch (Exception e){
+            return R.error("网络繁忙，请重试");
+        }
+    }
 }

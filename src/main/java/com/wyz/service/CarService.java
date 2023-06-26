@@ -8,4 +8,6 @@ public interface CarService extends IService<Car> {
     R<String> add(Car car);
 
     R<String> delete(Long id);
+
+    R<String> updateCar(Car car);
 }

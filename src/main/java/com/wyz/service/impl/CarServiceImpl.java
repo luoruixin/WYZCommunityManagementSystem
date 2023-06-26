@@ -35,4 +35,16 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         removeById(id);
         return R.success("删除成功");
     }
+
+    @Override
+    public R<String> updateCar(Car car) {
+        if(StrUtil.isEmpty(car.getNum())
+                ||StrUtil.isEmpty(car.getBrand())
+                ||StrUtil.isEmpty(car.getVin())
+                ||car.getId()==null){
+            return R.error("请将信息填充完整");
+        }
+        updateById(car);
+        return R.success("修改成功");
+    }
 }

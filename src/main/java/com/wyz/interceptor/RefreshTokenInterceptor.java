@@ -1,4 +1,4 @@
-package com.wyz.utils;
+package com.wyz.interceptor;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;

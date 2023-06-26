@@ -1,5 +1,6 @@
 package com.wyz.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wyz.dto.HouseJsonByLevel;
 import com.wyz.common.R;
@@ -12,4 +13,6 @@ public interface HouseService extends IService<House> {
     R<HouseJsonByLevel> selectByLevel();
 
     R<String> deleteHouse(String houseId);
+
+    R<Page> pageR(int page, int pageSize);
 }

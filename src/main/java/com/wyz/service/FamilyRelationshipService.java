@@ -8,4 +8,6 @@ import com.wyz.entity.FamilyRelationship;
 
 public interface FamilyRelationshipService extends IService<FamilyRelationship> {
     R<String> addFamily(AddFamilyFormDTO addFamilyFormDTO);
+
+    R<String> deleteFamily(Long id);
 }
