@@ -10,4 +10,6 @@ public interface HouseService extends IService<House> {
     R<String> bindHouse(BindHouseFormDTO house);
 
     R<HouseJson> selectByLevel();
+
+    R<String> deleteHouse(String houseId);
 }

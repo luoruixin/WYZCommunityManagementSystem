@@ -1,4 +1,4 @@
-package com.wyz.utils;
+package com.wyz.common;
 
 
 import com.wyz.dto.UserDTO;

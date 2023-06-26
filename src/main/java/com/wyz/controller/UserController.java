@@ -1,18 +1,13 @@
 package com.wyz.controller;
 
-import com.wyz.common.BaseContext_ThreadLocalHandler;
 import com.wyz.common.R;
 import com.wyz.dto.*;
-import com.wyz.entity.User;
-import com.wyz.service.UserRecordService;
 import com.wyz.service.UserService;
-import com.wyz.utils.UserHolder;
+import com.wyz.common.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 @Slf4j
@@ -83,6 +78,7 @@ public class UserController {
         try {
             UserDTO user = UserHolder.getUser();
             user.setPhone("*******"+user.getPhone().substring(user.getPhone().length() - 4));
+            user.setIdCard("******************");
             return R.success(user);
         }catch (Exception e){
             return R.error("请先登录，请重试");

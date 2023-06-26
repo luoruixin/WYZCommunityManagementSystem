@@ -13,4 +13,5 @@ public class UserDTO {
     private Integer age;
     private Integer sex;
     private String phone;
+    private String idCard;
 }

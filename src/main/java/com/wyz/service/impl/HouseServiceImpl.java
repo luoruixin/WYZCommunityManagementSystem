@@ -5,17 +5,30 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.HouseJson;
 import com.wyz.common.R;
 import com.wyz.dto.BindHouseFormDTO;
+import com.wyz.dto.UserDTO;
 import com.wyz.entity.House;
+import com.wyz.entity.HouseRecord;
 import com.wyz.mapper.HouseMapper;
+import com.wyz.service.HouseRecordService;
 import com.wyz.service.HouseService;
-import com.wyz.utils.UserHolder;
+import com.wyz.service.UserService;
+import com.wyz.common.UserHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements HouseService {
+
+    @Autowired
+    private HouseRecordService houseRecordService;
+    @Autowired
+    private UserService userService;
     @Override
+    @Transactional  //这里要操纵house和houseRecord两张表
     public R<String> bindHouse(BindHouseFormDTO bindHouseFormDTO) {
         if(StrUtil.isEmpty(bindHouseFormDTO.getArea())
             ||StrUtil.isEmpty(bindHouseFormDTO.getArea())
@@ -33,15 +46,80 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         }
         house.setUserId(UserHolder.getUser().getId());
         house.setRelation(bindHouseFormDTO.getRelation());
-
         updateById(house);
+
+        //将房屋信息添加到house_record表中
+        HouseRecord houseRecord=new HouseRecord();
+        houseRecord.setHouseId(house.getId());
+        houseRecord.setStartTime(LocalDateTime.now());
+        //暂时来说，居住的人是当前户主
+        houseRecord.setIdCard(UserHolder.getUser().getIdCard());
+        houseRecord.setName(UserHolder.getUser().getName());
+        houseRecordService.save(houseRecord);
         return R.success("房屋关系绑定成功");
     }
 
+    // TODO：该返回值使用redis缓存起来
     @Override
     public R<HouseJson> selectByLevel() {
-        List<House> houses = query().eq("user_id", null).list();
+        List<House> houses = query().isNull("user_id").orderByAsc("num").list();
+        HouseJson houseJson = new HouseJson();
+        Map<String, HouseJson.Area> areaMap = new HashMap<>();
 
-        return null;
+        for (House house : houses) {
+            String area = house.getArea();
+            String apart = house.getApart();
+            String cell = house.getCell();
+            String houseCode = house.getHouseCode();
+
+            HouseJson.Area areaObj = areaMap.get(area);
+            if (areaObj == null) {
+                areaObj = new HouseJson.Area();
+                areaMap.put(area, areaObj);
+            }
+
+            Map<String, HouseJson.Apart> apartMap = areaObj.getAparts();
+            if (apartMap == null) {
+                apartMap = new HashMap<>();
+                areaObj.setAparts(apartMap);
+            }
+
+            HouseJson.Apart apartObj = apartMap.get(apart);
+            if (apartObj == null) {
+                apartObj = new HouseJson.Apart();
+                apartMap.put(apart, apartObj);
+            }
+
+            Map<String, HouseJson.Cell> cellMap = apartObj.getCells();
+            if (cellMap == null) {
+                cellMap = new HashMap<>();
+                apartObj.setCells(cellMap);
+            }
+
+            HouseJson.Cell cellObj = cellMap.get(cell);
+            if (cellObj == null) {
+                cellObj = new HouseJson.Cell();
+                cellObj.setCodes(new String[]{});
+                cellMap.put(cell, cellObj);
+            }
+
+            String[] codes = cellObj.getCodes();
+            String[] newCodes = Arrays.copyOf(codes, codes.length + 1);
+            newCodes[codes.length] = houseCode;
+            cellObj.setCodes(newCodes);
+        }
+
+        houseJson.setAreas(areaMap);
+        return R.success(houseJson);
     }
+
+    @Override
+    public R<String> deleteHouse(String houseId) {
+        if(StrUtil.isEmpty(houseId)){
+            return R.error("id为空");
+        }
+        removeById(houseId);
+        return R.success("删除成功");
+    }
+
 }

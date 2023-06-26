@@ -1,5 +1,6 @@
 package com.wyz.utils;
 
+import com.wyz.common.UserHolder;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

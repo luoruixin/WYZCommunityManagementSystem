@@ -7,11 +7,11 @@ import java.util.Map;
 @Data
 public class HouseJson {
 
-    private Map<String, Area> data;
+    private Map<String, Area> areas;
 
     @Data
     public static class Area {
-        private Map<String, Apart> buildings;
+        private Map<String, Apart> aparts;
     }
 
     @Data

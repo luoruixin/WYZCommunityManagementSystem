@@ -16,7 +16,7 @@ import com.wyz.service.UserRecordService;
 import com.wyz.service.UserService;
 import com.wyz.utils.PermissionJudge;
 import com.wyz.utils.RegexUtils;
-import com.wyz.utils.UserHolder;
+import com.wyz.common.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,16 +95,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return R.error("该用户不存在，请注册");
         }
 
-        //TODO:7.存在，用户信息到redis
+        //7.存在，用户信息到redis
         UserDTO userDTO=new UserDTO();
         //7.1随机生成token，作为登录令牌(token不能使用手机号，不安全)
         String token = UUID.randomUUID().toString(true);
         //7.2将User对象转为HashMap存储
         BeanUtils.copyProperties(user,userDTO);
-//        Map<String, Object> userMap = BeanUtil.beanToMap(userDTO,new HashMap<>(),
-//                CopyOptions.create()
-//                        .setIgnoreNullValue(true)
-//                        .setFieldValueEditor((fieldName,fieldValue)->fieldValue.toString()));
 
         Map<String, String> userMap=new HashMap<>();
         userToMap(userDTO, userMap);
@@ -140,7 +136,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!DigestUtils.md5DigestAsHex(password.getBytes()).equals(user.getPassword())) {
             return R.error("密码不正确");
         }
-        //TODO:7.存在，用户信息到redis
+        //7.存在，用户信息到redis
         UserDTO userDTO=new UserDTO();
         //7.1随机生成token，作为登录令牌(token不能使用手机号，不安全)
         String token = UUID.randomUUID().toString(true);
@@ -404,6 +400,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userMap.put("id", userDTO.getId().toString());
         userMap.put("nickname", userDTO.getNickname());
         userMap.put("name", userDTO.getName());
+        userMap.put("idCard",userDTO.getIdCard());
         if(userDTO.getType()==null){
             userMap.put("type", null);
         }else {
