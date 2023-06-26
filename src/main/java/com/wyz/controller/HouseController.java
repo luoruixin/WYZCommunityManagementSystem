@@ -50,7 +50,7 @@ public class HouseController {
         try{
             return houseService.deleteHouse(houseId);
         }catch (Exception e){
-            return R.error("房屋查询失败，请重试");
+            return R.error("房屋删除失败，请重试");
         }
     }
 

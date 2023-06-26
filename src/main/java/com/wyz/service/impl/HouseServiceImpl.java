@@ -1,6 +1,7 @@
 package com.wyz.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.HouseJson;
 import com.wyz.common.R;
@@ -118,7 +119,22 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         if(StrUtil.isEmpty(houseId)){
             return R.error("id为空");
         }
-        removeById(houseId);
+        House house = query().eq("id", houseId).one();
+        if(house.getUserId()==null){
+            return R.error("当前房屋还未进行绑定");
+        }
+        if(!Objects.equals(house.getUserId(), UserHolder.getUser().getId())){
+            return R.error("该房屋并不属于您");
+        }
+        house.setUserId(null);
+        house.setRelation(null);
+        updateById(house);
+
+        //在house_record表中填写退房时间
+        HouseRecord houseRecord=houseRecordService.query().eq("house_id",house.getId()).one();
+        houseRecord.setEndTime(LocalDateTime.now());
+        houseRecordService.updateById(houseRecord);
+
         return R.success("删除成功");
     }
 
