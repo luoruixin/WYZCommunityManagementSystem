@@ -145,7 +145,6 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     }
 
     @Override
-    @Transactional
     public R<Page> pageR(int page, int pageSize) {
         //构造分页构造器对象
         Page<House> pageInfo=new Page<>(page,pageSize);

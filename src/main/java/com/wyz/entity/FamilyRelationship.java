@@ -20,4 +20,8 @@ public class FamilyRelationship {
     private String name;
     @TableField(value = "id_card")
     private String idCard;
+    @TableField(value = "sex")
+    private Integer sex;
+    @TableField(value = "age")
+    private Integer age;
 }

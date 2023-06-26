@@ -1,11 +1,12 @@
 package com.wyz.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wyz.common.R;
-import com.wyz.dto.AddFamilyFormDTO;
+import com.wyz.dto.FamilyFormDTO;
+import com.wyz.entity.FamilyRelationship;
 import com.wyz.service.FamilyRelationshipService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -18,9 +19,9 @@ public class FamilyRelationshipController {
 
     //添加家庭成员
     @PostMapping("/addFamily")
-    public R<String> addFamily(@RequestBody AddFamilyFormDTO addFamilyFormDTO){
+    public R<String> addFamily(@RequestBody FamilyFormDTO familyFormDTO){
         try {
-            return familyRelationshipService.addFamily(addFamilyFormDTO);
+            return familyRelationshipService.addFamily(familyFormDTO);
         }catch (Exception e){
             return R.error("添加家庭成员失败");
         }
@@ -36,4 +37,23 @@ public class FamilyRelationshipController {
         }
     }
 
+    //分页查询
+    @GetMapping("/page")
+    public R<Page> pageR(int page,int pageSize){
+        try {
+            return familyRelationshipService.pageR(page,pageSize);
+        }catch (Exception e){
+            return R.error("网络状况不佳，请稍后");
+        }
+    }
+
+    //修改家人信息
+    @PutMapping("/update")
+    public R<String> update(@RequestBody FamilyRelationship familyRelationship){
+        try {
+            return familyRelationshipService.updateFamily(familyRelationship);
+        }catch (Exception e){
+            return R.error("网络状况不佳，请稍后");
+        }
+    }
 }
