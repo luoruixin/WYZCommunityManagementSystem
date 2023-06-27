@@ -53,7 +53,7 @@ public class FamilyRelationshipController {
         try {
             return familyRelationshipService.updateFamily(familyRelationship);
         }catch (Exception e){
-            return R.error("网络状况不佳，请稍后");
+            return R.error("修改失败");
         }
     }
 }

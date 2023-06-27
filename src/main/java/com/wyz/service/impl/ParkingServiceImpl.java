@@ -42,7 +42,7 @@ public class ParkingServiceImpl extends ServiceImpl<ParkingMapper, Parking> impl
     }
 
     @Override
-    public R<String> add(Parking parking) {
+    public R<String> bindParking(Parking parking) {
         if(StrUtil.isEmpty(parking.getParkingNum())||StrUtil.isEmpty(parking.getArea())){
             return R.error("请将信息填充完整");
         }

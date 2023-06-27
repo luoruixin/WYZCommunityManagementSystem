@@ -52,7 +52,8 @@ public class MvcConfig implements WebMvcConfigurer {
                 "/car/**",
                 "/parking/**",
                 "/problem/**",
-                "/complain/**"
+                "/complain/**",
+                "/file/**"
         ).order(3);
         registry.addInterceptor(new HandleVoteInterceptor()).addPathPatterns(
                 "/familyRelationship/**",

@@ -21,11 +21,11 @@ public class ParkingController {
     @Autowired
     private ParkingService parkingService;
 
-    //添加车位
-    @PostMapping("/add")
-    public R<String> add(@RequestBody Parking parking){
+    //绑定车位
+    @PostMapping("/bindParking")
+    public R<String> bindParking(@RequestBody Parking parking){
         try {
-            return parkingService.add(parking);
+            return parkingService.bindParking(parking);
         }catch (Exception e){
             return R.error("网络繁忙，请重试");
         }

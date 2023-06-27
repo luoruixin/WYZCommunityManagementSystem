@@ -8,7 +8,7 @@ import com.wyz.entity.Parking;
 public interface ParkingService extends IService<Parking> {
     R<ParkingJsonByLevel> selectUnused();
 
-    R<String> add(Parking parking);
+    R<String> bindParking(Parking parking);
 
     R<String> delete(String id);
 }

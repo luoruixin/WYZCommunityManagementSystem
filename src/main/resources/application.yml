@@ -71,4 +71,5 @@ mybatis-plus:
       id-type: ASSIGN_ID
 
 WYZCommunityManagementSystem:
-  path: D:/WYZCommunityManagementSystem/resources
+  picturePath: D:/WYZCommunityManagementSystem/resources/picture/
+  videoPath: D:/WYZCommunityManagementSystem/resources/video/
