@@ -23,6 +23,7 @@ public class FamilyRelationshipController {
         try {
             return familyRelationshipService.addFamily(familyFormDTO);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("添加家庭成员失败");
         }
     }
@@ -33,6 +34,7 @@ public class FamilyRelationshipController {
         try {
             return familyRelationshipService.deleteFamily(id);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("删除家庭成员失败");
         }
     }
@@ -43,6 +45,7 @@ public class FamilyRelationshipController {
         try {
             return familyRelationshipService.pageR(page,pageSize);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络状况不佳，请稍后");
         }
     }
@@ -53,6 +56,7 @@ public class FamilyRelationshipController {
         try {
             return familyRelationshipService.updateFamily(familyRelationship);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("修改失败");
         }
     }

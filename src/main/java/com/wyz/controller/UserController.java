@@ -25,9 +25,9 @@ public class UserController {
         try{
             return userService.sendCode(phone,session);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("发送验证码失败");
         }
-
     }
 
     /**
@@ -40,6 +40,7 @@ public class UserController {
             return userService.loginByPhone(loginForm,session);
         }
         catch (Exception e){
+            e.printStackTrace();
             return R.error("登录失败");
         }
     }
@@ -53,6 +54,7 @@ public class UserController {
         try {
             return userService.loginByNickName(loginForm,session);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("登录失败");
         }
     }
@@ -67,6 +69,7 @@ public class UserController {
             return R.success("登出成功");
         }
         catch (Exception e){
+            e.printStackTrace();
             return R.error("登录失败");
         }
     }
@@ -81,6 +84,7 @@ public class UserController {
             user.setIdCard("******************");
             return R.success(user);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("请先登录，请重试");
         }
 
@@ -92,6 +96,7 @@ public class UserController {
         try {
             return userService.register(registerForm,session);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("注册失败");
         }
     }
@@ -102,6 +107,7 @@ public class UserController {
         try {
             return userService.foundPwd(foundPasswordFormDTO,session);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("找回密码失败");
         }
     }
@@ -112,6 +118,7 @@ public class UserController {
         try {
             return userService.updatePwd(updatePwdFormDTO,session);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("修改密码失败");
         }
     }
@@ -122,6 +129,7 @@ public class UserController {
         try {
             return userService.updatePhone(updatePhoneFormDTO,session);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("修改绑定手机号失败");
         }
     }
@@ -132,6 +140,7 @@ public class UserController {
         try {
             return userService.realNameIdentify(realNameFormDTO,session);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("实名认证失败");
         }
     }
@@ -142,6 +151,7 @@ public class UserController {
         try {
             return userService.writeOff();
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("注销失败");
         }
     }
@@ -152,6 +162,7 @@ public class UserController {
         try {
             return userService.judgeResidentEntrance();
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("进入失败");
         }
     }
@@ -162,6 +173,7 @@ public class UserController {
         try {
             return userService.judgeOtherPermissions();
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }
@@ -172,6 +184,7 @@ public class UserController {
         try {
             return userService.judgeVotePermissions();
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }

@@ -27,6 +27,7 @@ public class ParkingController {
         try {
             return parkingService.bindParking(parking);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }
@@ -37,6 +38,7 @@ public class ParkingController {
         try {
             return parkingService.selectUnused();
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }
@@ -47,6 +49,7 @@ public class ParkingController {
         try {
             return parkingService.delete(id);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }

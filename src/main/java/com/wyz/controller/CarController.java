@@ -26,6 +26,7 @@ public class CarController {
         try {
             return carService.add(car);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }
@@ -36,6 +37,7 @@ public class CarController {
         try {
             return carService.delete(id);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }
@@ -62,6 +64,7 @@ public class CarController {
         try {
             return carService.updateCar(car);
         }catch (Exception e){
+            e.printStackTrace();
             return R.error("网络繁忙，请重试");
         }
     }
