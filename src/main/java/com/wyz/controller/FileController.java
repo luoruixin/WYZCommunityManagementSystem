@@ -21,11 +21,13 @@ public class FileController {
 
     @Value("${WYZCommunityManagementSystem.picturePath}")
     private String imgPath;
+    @Value("${WYZCommunityManagementSystem.videoPath}")
+    private String videoPath;
 
-    //MultipartFile适用于文件的上传
+    //图片上传
     @PostMapping("/uploadImg")
     public R<String> upload(@RequestParam("file") MultipartFile file) {  //file这个名字不能随便起，必须和页面的name保持一致
-        //file是一个临时文件，需要转存到指定位置，否则本次请求完成后临时文件会删除
+
         log.info(file.toString());
 
         //获取原始文件名
@@ -33,7 +35,11 @@ public class FileController {
 
         //使用UUID重新生成文件名，防止文件名称重复造出文件覆盖
         String fileName = createNewImgName(originalFilename);  //这里的fileName是全路径名
-        
+        File dir=new File(imgPath);
+        if(!dir.exists()){
+            //目录不存在
+            dir.mkdirs();
+        }
         try {
             //将临时文件转存到指定位置
             file.transferTo(new File(imgPath+fileName));
@@ -45,11 +51,7 @@ public class FileController {
         return R.success(fileName);
     }
 
-    /**
-     * 文件下载(注意这里的返回值是void)
-     * @param name
-     * @param resp
-     */
+    //图片下载
     @GetMapping("/downloadImg")
     public void download(String name, HttpServletResponse resp){
         //这里的name是全路径名
@@ -76,7 +78,32 @@ public class FileController {
 
     }
 
-    
+    //视频上传
+    @PostMapping("/uploadVideo")
+    public R<String> uploadVideo(@RequestParam("file") MultipartFile file) {  //file这个名字不能随便起，必须和页面的name保持一致
+
+        log.info(file.toString());
+
+        //获取原始文件名
+        String originalFilename = file.getOriginalFilename();
+
+        //使用UUID重新生成文件名，防止文件名称重复造出文件覆盖
+        String fileName = createNewVideoName(originalFilename);  //这里的fileName是全路径名
+        File dir=new File(videoPath);
+        if(!dir.exists()){
+            //目录不存在
+            dir.mkdirs();
+        }
+        try {
+            //将临时文件转存到指定位置
+            file.transferTo(new File(videoPath+fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return R.error("上传失败");
+        }
+        //最后需要向页面返回文件名称
+        return R.success(fileName);
+    }
     //------------------------------------创建文件名的工具类----------------------------------------
     
     private String createNewImgName(String originalFilename) {
@@ -89,6 +116,23 @@ public class FileController {
         int d2 = (hash >> 4) & 0xF;
         // 判断目录是否存在
         File dir = new File(imgPath, StrUtil.format("/{}/{}", d1, d2));
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        // 生成文件名
+        return StrUtil.format("/{}/{}/{}.{}", d1, d2, name, suffix);
+    }
+
+    private String createNewVideoName(String originalFilename) {
+        // 获取后缀
+        String suffix = StrUtil.subAfter(originalFilename, ".", true);
+        // 生成目录
+        String name = UUID.randomUUID().toString();
+        int hash = name.hashCode();
+        int d1 = hash & 0xF;
+        int d2 = (hash >> 4) & 0xF;
+        // 判断目录是否存在
+        File dir = new File(videoPath, StrUtil.format("/{}/{}", d1, d2));
         if (!dir.exists()) {
             dir.mkdirs();
         }

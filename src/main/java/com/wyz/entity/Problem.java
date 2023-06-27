@@ -26,7 +26,6 @@ public class Problem {
     private String videoName;
     @TableField(value = "image")
     private String imageName;
-
     @TableField(value = "title")
     private String title;
 }
