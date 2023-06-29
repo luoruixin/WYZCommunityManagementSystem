@@ -42,12 +42,9 @@ public class FamilyRelationshipController {
     //分页查询
     @GetMapping("/page")
     public R<Page> pageR(int page,int pageSize){
-        try {
-            return familyRelationshipService.pageR(page,pageSize);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络状况不佳，请稍后");
-        }
+
+        return familyRelationshipService.pageR(page,pageSize);
+
     }
 
     //修改家人信息

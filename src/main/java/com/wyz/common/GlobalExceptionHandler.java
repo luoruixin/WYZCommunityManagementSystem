@@ -38,10 +38,21 @@ public class GlobalExceptionHandler {
      * 异常处理方法(捕获自定义异常)
      * @return
      */
-    @ExceptionHandler(CustomExcepion.class)  //告诉springboot这是处理什么异常的方法
-    public R<String> exceptionHandler(CustomExcepion ex){
+    @ExceptionHandler(CustomException.class)  //告诉springboot这是处理什么异常的方法
+    public R<String> exceptionHandler(CustomException ex){
         log.error(ex.getMessage());
 
         return R.error(ex.getMessage());
+    }
+
+    /**
+     * 异常处理方法(捕获全局异常)
+     * @return
+     */
+    @ExceptionHandler(Exception.class)  //告诉springboot这是处理什么异常的方法
+    public R<String> exceptionHandler(Exception ex){
+        log.error(ex.getMessage());
+
+        return R.error("网络问题，请重试");
     }
 }

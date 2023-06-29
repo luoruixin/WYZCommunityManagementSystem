@@ -23,23 +23,17 @@ public class CarController {
     //添加车位
     @PostMapping("/add")
     public R<String> add(@RequestBody Car car){
-        try {
-            return carService.add(car);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+
+        return carService.add(car);
+
     }
 
     //删除车辆
     @DeleteMapping("/delete")
     public R<String> delete(@RequestParam Long id){
-        try {
-            return carService.delete(id);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+
+        return R.error("网络繁忙，请重试");
+
     }
 
     //分页查询
@@ -61,11 +55,6 @@ public class CarController {
     //修改车辆信息
     @PutMapping("/update")
     public R<String> update(@RequestBody Car car){
-        try {
-            return carService.updateCar(car);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+        return carService.updateCar(car);
     }
 }

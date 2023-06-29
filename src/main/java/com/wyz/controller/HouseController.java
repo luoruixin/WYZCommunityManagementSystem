@@ -34,12 +34,9 @@ public class HouseController {
     //房屋的分级查询
     @GetMapping("/selectByLevel")
     public R<HouseJsonByLevel> selectByLevel(){
-        try{
-            return houseService.selectByLevel();
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("房屋查询失败，请重试");
-        }
+
+        return houseService.selectByLevel();
+
     }
 
     //删除绑定的房屋
@@ -56,12 +53,9 @@ public class HouseController {
     //分页查询
     @GetMapping("/page")
     public R<Page> pageR(int page, int pageSize){
-        try{
-            return houseService.pageR(page,pageSize);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("房屋删除失败，请重试");
-        }
+
+        return houseService.pageR(page,pageSize);
+
     }
 
 

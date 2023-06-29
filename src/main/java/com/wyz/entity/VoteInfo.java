@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.NonNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,9 +17,9 @@ public class VoteInfo {
     @TableField(value = "create_user_id")
     private Long createUserId;
     @TableField(value = "start_time")
-    private LocalDateTime startTime;
+    private LocalDate startTime;
     @TableField(value = "end_time")
-    private LocalDateTime endTime;
+    private LocalDate endTime;
     @TableField(value = "category")
     private String category;
     @TableField(value = "content")

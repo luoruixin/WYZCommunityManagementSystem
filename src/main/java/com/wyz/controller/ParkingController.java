@@ -24,34 +24,25 @@ public class ParkingController {
     //绑定车位
     @PostMapping("/bindParking")
     public R<String> bindParking(@RequestBody Parking parking){
-        try {
-            return parkingService.bindParking(parking);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+
+        return parkingService.bindParking(parking);
+
     }
 
     //查询还未被绑定的车位
     @GetMapping("/selectUnused")
     public R<ParkingJsonByLevel> selectUnused(){
-        try {
-            return parkingService.selectUnused();
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+
+        return parkingService.selectUnused();
+
     }
 
     //删除车位
     @DeleteMapping("/delete")
     public R<String> delete(@RequestParam String id){
-        try {
-            return parkingService.delete(id);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+
+        return parkingService.delete(id);
+
     }
 
     //分页查询

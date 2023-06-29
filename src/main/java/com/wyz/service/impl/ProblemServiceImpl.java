@@ -11,7 +11,9 @@ import com.wyz.mapper.ProblemMapper;
 import com.wyz.service.ProblemService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> implements ProblemService {
@@ -21,6 +23,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
             ||StrUtil.isEmpty(problem.getCategory())
             ||StrUtil.isEmpty(problem.getTitle())){
             return R.success("请将信息填充完整");
+        }
+        LocalDate localDate = LocalDateTime.now().toLocalDate();
+        List<Problem> problemList = query().eq("user_id", UserHolder.getUser().getId()).like("create_time", localDate).list();
+        if(problemList.size()>2){
+            //防止一天内上报问题的次数过多
+            return R.error("您已经达到今天的上限");
         }
         problem.setUserId(UserHolder.getUser().getId());
         problem.setStatus(0);

@@ -20,7 +20,8 @@ class WYZCommunityManagementSystemApplicationTests {
 
     @Test
     void contextLoads() {
-        createNewFileName("12345.jpg");
+        String s="123456";
+        System.out.println(s.substring(0,2));
     }
 
     private void createNewFileName(String originalFilename) {

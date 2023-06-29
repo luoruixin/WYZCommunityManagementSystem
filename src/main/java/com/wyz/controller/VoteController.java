@@ -8,4 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/vote")
 public class VoteController {
+
+    //查询现在正在进行的投票
+
+    //参与投票
+
 }

@@ -30,12 +30,9 @@ public class ProblemController {
     //问题分页查询
     @GetMapping("/pageMe")
     public R<Page> pageMe(int page,int pageSize){
-        try {
-            return problemService.pageMe(page,pageSize);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("查询失败");
-        }
+
+        return problemService.pageMe(page,pageSize);
+
     }
 
     //修改问题
