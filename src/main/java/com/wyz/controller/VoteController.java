@@ -1,5 +1,6 @@
 package com.wyz.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wyz.common.R;
 import com.wyz.service.VoteRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,4 +22,9 @@ public class VoteController {
         return voteRecordService.joinVote(id,type);
     }
 
+    //查看自己参加过的投票
+    @GetMapping("/pageMe")
+    public R<Page> pageMe(int page,int pageSize,String condition){
+        return voteRecordService.pageMe(page,pageSize,condition);
+    }
 }

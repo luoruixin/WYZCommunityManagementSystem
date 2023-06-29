@@ -1,5 +1,7 @@
 package com.wyz.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
@@ -11,6 +13,7 @@ import com.wyz.mapper.VoteRecordMapper;
 import com.wyz.service.HouseService;
 import com.wyz.service.VoteInfoService;
 import com.wyz.service.VoteRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
+@Slf4j
 public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRecord> implements VoteRecordService {
     @Autowired
     private HouseService houseService;
@@ -68,5 +72,24 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
         save(voteRecord);
 
         return R.success("投票成功");
+    }
+
+    @Override
+    public R<Page> pageMe(int page, int pageSize, String condition) {
+        UserDTO user = UserHolder.getUser();
+        log.info("page={},pageSize={},name={}",page,pageSize,condition);
+
+        //构造分页构造器
+        Page pageInfo=new Page(page,pageSize);
+
+        //构造条件构造器
+        LambdaQueryWrapper<VoteRecord> queryWrapper=new LambdaQueryWrapper<>();
+        //添加过滤条件
+        queryWrapper = queryWrapper.eq(VoteRecord::getUserId,user.getId());
+        //添加排序条件
+        queryWrapper.orderByDesc(VoteRecord::getVoteTime);
+        page(pageInfo,queryWrapper);
+
+        return R.success(pageInfo);
     }
 }

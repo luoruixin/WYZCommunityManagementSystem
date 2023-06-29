@@ -52,4 +52,5 @@ public class CommitteeVoteController {
         return voteInfoService.getDetails(id);
     }
 
+
 }

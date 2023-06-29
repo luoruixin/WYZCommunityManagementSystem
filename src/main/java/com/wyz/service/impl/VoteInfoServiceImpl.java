@@ -109,7 +109,7 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         queryWrapper = queryWrapper.eq(VoteInfo::getCreateUserId,user.getId()).and(wapper->wapper.like(condition!=null,VoteInfo::getCategory, condition).or().like(condition!=null,VoteInfo::getTitle, condition));
         //添加排序条件
         queryWrapper.orderByDesc(VoteInfo::getStartTime);
-        page(pageInfo,queryWrapper);
+        page(pageInfo, queryWrapper);
 
         return R.success(pageInfo);
     }
