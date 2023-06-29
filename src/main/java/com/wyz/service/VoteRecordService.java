@@ -8,7 +8,7 @@ import com.wyz.entity.VoteRecord;
 public interface VoteRecordService extends IService<VoteRecord> {
     R<String> joinVote(Long id, Integer type);
 
-    R<Page> pageMe(int page, int pageSize, String condition);
+    R<Page> pageMe(int page, int pageSize);
 
     R<Page> pageCan(int page, int pageSize);
 }

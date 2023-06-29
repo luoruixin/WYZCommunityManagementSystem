@@ -28,7 +28,7 @@ public class VoteController {
 
     //查看自己参加过的投票
     @GetMapping("/pageMe")
-    public R<Page> pageMe(int page,int pageSize,String condition){
-        return voteRecordService.pageMe(page,pageSize,condition);
+    public R<Page> pageMe(int page,int pageSize){
+        return voteRecordService.pageMe(page,pageSize);
     }
 }

@@ -39,6 +39,8 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
     private VoteInfoMapper voteInfoMapper;
     @Autowired
     private VoteRecordService voteRecordService;
+    @Autowired
+    private VoteRecordMapper voteRecordMapper;
 
     @Override
     @Transactional
@@ -100,43 +102,15 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
         return R.success("投票成功");
     }
 
-    //TODO:简化代码，使用原生sql
     @Override
     @Transactional
-    public R<Page> pageMe(int page, int pageSize, String condition) {
+    public R<Page> pageMe(int page, int pageSize) {
         UserDTO user = UserHolder.getUser();
-        log.info("page={},pageSize={},name={}",page,pageSize,condition);
+        log.info("page={},pageSize={}",page,pageSize);
         //构造分页构造器
         Page pageInfo=new Page(page,pageSize);
 
-        //构造条件构造器
-        LambdaQueryWrapper<VoteRecord> queryWrapper=new LambdaQueryWrapper<>();
-        //添加过滤条件
-        queryWrapper = queryWrapper.eq(VoteRecord::getUserId,user.getId());
-        //添加排序条件
-        queryWrapper.orderByDesc(VoteRecord::getVoteTime);
-        page(pageInfo,queryWrapper);
-
-        //封装records
-        List<VoteRecord> voteRecordList = pageInfo.getRecords();
-        List<VoteRecordDTO> voteRecordDTOList=voteRecordList.stream().map(
-                article -> {
-                    VoteRecordDTO articleDto=new VoteRecordDTO();
-                    BeanUtil.copyProperties(article,articleDto);
-                    return articleDto;
-                }
-        ).collect(Collectors.toList());
-
-//        List<Long> categoryIds=new ArrayList<>();
-        for (VoteRecordDTO voteRecordDTO : voteRecordDTOList) {
-            Long voteInfoId = voteRecordDTO.getVoteInfoId();
-            VoteInfo voteInfo = voteInfoService.getById(voteInfoId);
-            voteRecordDTO.setStartTime(voteInfo.getStartTime());
-            voteRecordDTO.setEndTime(voteInfo.getEndTime());
-            voteRecordDTO.setCategory(voteInfo.getCategory());
-            voteRecordDTO.setContent(voteInfo.getContent());
-            voteRecordDTO.setTitle(voteInfo.getTitle());
-        }
+        List<VoteRecordDTO> voteRecordDTOList = voteRecordMapper.selectMe(page-1, pageSize, user.getId());
         pageInfo.setRecords(voteRecordDTOList);
         return R.success(pageInfo);
     }

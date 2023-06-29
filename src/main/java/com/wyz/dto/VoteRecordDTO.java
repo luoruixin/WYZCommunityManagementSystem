@@ -1,5 +1,7 @@
 package com.wyz.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDate;

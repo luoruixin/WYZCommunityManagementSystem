@@ -47,7 +47,7 @@ public class CommitteeVoteController {
     }
 
     //查看投票详情
-    //TODO: 添加分析投票的功能
+    // TODO: 添加分析投票的功能
     @GetMapping("/details")
     public R<VoteInfoDTO> details(@RequestParam("id")Long id){
         return voteInfoService.getDetails(id);
