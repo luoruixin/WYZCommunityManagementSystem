@@ -30,7 +30,6 @@ public class DistributedRedisLock implements ILock{
     @Override
     public boolean tryLock(long timeoutSec) {
         String key=KEY_PREFIX+lockName;
-        //TODO:问题：会不会不同的jvm虚拟机的 VALUE_ID_PREFIX 相同的情况？
         //获取线程标识(先用VALUE_ID_PREFIX区分不同的jvm，再用线程id区别同一个jvm中的不同线程)
         String threadId = VALUE_ID_PREFIX+Thread.currentThread().getId();
         //获取锁

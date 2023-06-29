@@ -124,7 +124,6 @@ public class CacheClient {
         boolean isLock = tryLock(lockKey);
         //5.2.判断是否获取锁成功
         if(isLock){
-            //TODO:注意：获取锁成功应该再次检测redis缓存是否过期，做DoubleCheck。如果存在则无需重建缓存。
             //5.3获取互斥锁成功则开启新线程，实现缓存重建
             CACHE_REBUILD_THREADPOOLS.submit(()->{
                 try {

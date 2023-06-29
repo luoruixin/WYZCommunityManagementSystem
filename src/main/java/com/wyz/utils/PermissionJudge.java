@@ -1,6 +1,5 @@
 package com.wyz.utils;
 
-//TODO:权限管理后期可能会进行改动
 public class PermissionJudge {
     public static int judgeAuthority(Integer type, Integer examine){
         if(type==null&&examine==null){

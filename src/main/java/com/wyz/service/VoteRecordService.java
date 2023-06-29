@@ -9,4 +9,6 @@ public interface VoteRecordService extends IService<VoteRecord> {
     R<String> joinVote(Long id, Integer type);
 
     R<Page> pageMe(int page, int pageSize, String condition);
+
+    R<Page> pageCan(int page, int pageSize);
 }

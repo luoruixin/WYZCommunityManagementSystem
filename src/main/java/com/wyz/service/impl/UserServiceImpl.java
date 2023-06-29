@@ -133,7 +133,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return R.error("该用户不存在，请注册");
         }
         //判断密码是否正确(加密后再对比)
-        if (!DigestUtils.md5DigestAsHex(password.getBytes()).equals(user.getPassword())) {
+        if (!password.equals(user.getPassword())) {
             return R.error("密码不正确");
         }
         //7.存在，用户信息到redis
@@ -189,7 +189,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setPhone(registerForm.getPhone());
             user.setNickname(registerForm.getNickname());
             //注意下面要md5加密
-            user.setPassword(DigestUtils.md5DigestAsHex(registerForm.getPassword().getBytes()));
+            user.setPassword(registerForm.getPassword());
             save(user);
             return R.success("注册成功");
         }
@@ -218,7 +218,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(user==null){
             return R.error("用户不存在");
         }
-        user.setPassword(DigestUtils.md5DigestAsHex(foundPasswordFormDTO.getNewPassword().getBytes()));
+        user.setPassword(foundPasswordFormDTO.getNewPassword());
         updateById(user);
         return R.success("找回密码成功");
     }
@@ -238,10 +238,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return R.error("用户不存在");
         }
         //判断密码是否正确
-        if(!DigestUtils.md5DigestAsHex(oldPassword.getBytes()).equals(user.getPassword())){
+        if(!oldPassword.equals(user.getPassword())){
             return R.error("原密码输入错误");
         }
-        user.setPassword(DigestUtils.md5DigestAsHex(updatePwdFormDTO.getNewPassword().getBytes()));
+        user.setPassword(updatePwdFormDTO.getNewPassword());
         updateById(user);
         return R.success("修改密码成功");
     }
@@ -361,7 +361,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Integer type = user.getType();
         Integer examine = user.getExamine();
         if (PermissionJudge.judgeAuthority(type,examine)>1) {
-            //TODO:前端进行页面跳转时不用弹窗显示“欢迎”
             return R.success("欢迎");
         }
         return R.error("您没有权限");

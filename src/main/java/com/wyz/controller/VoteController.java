@@ -14,7 +14,11 @@ public class VoteController {
     @Autowired
     private VoteRecordService voteRecordService;
 
-    //查询现在正在进行的投票
+    //查询现在能参加的投票
+    @GetMapping("/pageCan")
+    public R<Page> pageCan(int page,int pageSize){
+        return voteRecordService.pageCan(page,pageSize);
+    }
 
     //参与投票
     @PostMapping("/joinVote")

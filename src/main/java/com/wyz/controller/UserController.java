@@ -22,12 +22,9 @@ public class UserController {
      */
     @PostMapping("/code")
     public R<String> sendCode(@RequestParam("phone") String phone, HttpSession session) {
-        try{
-            return userService.sendCode(phone,session);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("发送验证码失败");
-        }
+
+        return userService.sendCode(phone,session);
+
     }
 
     /**
@@ -170,22 +167,16 @@ public class UserController {
     //判断是否有除了投票之外的所有权限
     @PostMapping("/judgeOtherPermissions")
     public R<String> judgeOtherPermissions(){
-        try {
-            return userService.judgeOtherPermissions();
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+
+        return userService.judgeOtherPermissions();
+
     }
 
     //判断是否有除了投票之外的所有权限
     @PostMapping("/judgeVotePermissions")
     public R<String> judgeVotePermissions(){
-        try {
-            return userService.judgeVotePermissions();
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+
+        return userService.judgeVotePermissions();
+
     }
 }

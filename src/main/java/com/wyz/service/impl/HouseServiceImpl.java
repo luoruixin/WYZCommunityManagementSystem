@@ -65,7 +65,6 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         return R.success("房屋关系绑定成功");
     }
 
-    // TODO：该返回值使用redis缓存起来
     @Override
     public R<HouseJsonByLevel> selectByLevel() {
         List<House> houses = query().isNull("user_id").orderByAsc("num").list();
