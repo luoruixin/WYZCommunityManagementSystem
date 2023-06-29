@@ -17,4 +17,5 @@ public class VoteInfoDTO {
     private String joinCode;
     private String title;
     private String apart;
+    private String name;
 }

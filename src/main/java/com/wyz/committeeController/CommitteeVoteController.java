@@ -1,9 +1,11 @@
 package com.wyz.committeeController;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wyz.common.R;
 import com.wyz.dto.VoteInfoDTO;
 import com.wyz.entity.VoteInfo;
 import com.wyz.service.VoteInfoService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class CommitteeVoteController {
     @Autowired
     private VoteInfoService voteInfoService;
-    //TODO:发布投票(未完成)
+
+    //发布投票
     @PostMapping("/publish")
     public R<String> publish(@RequestBody VoteInfoDTO voteInfoDTO){
         try {
@@ -25,5 +28,28 @@ public class CommitteeVoteController {
         }
     }
 
+    //投票分页查询
+    @GetMapping("/page")
+    public R<Page> pageR(int page,int pageSize,String condition){
+        return voteInfoService.pageR(page,pageSize,condition);
+    }
+
+    //查询自己发布的投票
+    @GetMapping("/pageMe")
+    public R<Page> pageMe(int page,int pageSize,String condition){
+        return voteInfoService.pageMe(page,pageSize,condition);
+    }
+
+    //删除投票
+    @DeleteMapping("/delete")
+    public R<String> delete(@RequestParam("id")Long id){
+        return voteInfoService.deleteVote(id);
+    }
+
+    //查看投票详情
+    @GetMapping("/details")
+    public R<VoteInfoDTO> details(@RequestParam("id")Long id){
+        return voteInfoService.getDetails(id);
+    }
 
 }

@@ -20,6 +20,4 @@ public class VoteRecord {
     private LocalDateTime voteTime;
     @TableField(value = "vote_type")
     private Integer voteType;
-    @TableField(value = "title")
-    private String title;
 }
