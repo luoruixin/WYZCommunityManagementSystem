@@ -26,6 +26,21 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
+mybatis-plus:
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   #这个可以帮忙打印mp运行时的sql日志
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+#mybatis:
+#  config-location: classpath:mybatis-config.xml
+
+WYZCommunityManagementSystem:
+  picturePath: D:/WYZCommunityManagementSystem/resources/picture/
+  videoPath: D:/WYZCommunityManagementSystem/resources/video/
+
 
 #  shardingsphere:
 #    datasource:
@@ -59,17 +74,3 @@ spring:
 #        show: true #开启SQL显示，默认false
 #  main:
 #    allow-bean-definition-overriding: true
-
-
-mybatis-plus:
-  configuration:
-    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   #这个可以帮忙打印mp运行时的sql日志
-  global-config:
-    db-config:
-      id-type: ASSIGN_ID
-
-WYZCommunityManagementSystem:
-  picturePath: D:/WYZCommunityManagementSystem/resources/picture/
-  videoPath: D:/WYZCommunityManagementSystem/resources/video/

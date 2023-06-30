@@ -1,6 +1,7 @@
 package com.wyz;
 
 import cn.hutool.core.util.StrUtil;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy(exposeProxy = true) //暴露代理对象
+//@MapperScan("com.wyz.mapper")
 public class WYZCommunityManagementSystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(WYZCommunityManagementSystemApplication.class, args);

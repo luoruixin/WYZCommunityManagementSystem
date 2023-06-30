@@ -13,4 +13,6 @@ public interface ProblemService extends IService<Problem> {
     R<String> updateProblem(Problem problem);
 
     R<String> deleteProblem(Long id);
+
+    R<Page> pageAll(int page, int pageSize, String condition);
 }

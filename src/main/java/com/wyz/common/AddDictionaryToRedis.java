@@ -26,7 +26,7 @@ public class AddDictionaryToRedis implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Map<Object, Object> map = stringRedisTemplate.opsForHash().entries("dictionary");
-        if(map!=null){
+        if(map!=null&&map.size()!=0){
             return;
         }
         List<Dictionary> dictionaryList = dictionaryService.list();

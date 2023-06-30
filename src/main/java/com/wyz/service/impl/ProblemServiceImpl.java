@@ -6,17 +6,26 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
+import com.wyz.dto.ProblemDTO;
+import com.wyz.dto.UserDTO;
+import com.wyz.dto.VoteRecordDTO;
 import com.wyz.entity.Problem;
 import com.wyz.mapper.ProblemMapper;
 import com.wyz.service.ProblemService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> implements ProblemService {
+    @Autowired
+    private ProblemMapper problemMapper;
     @Override
     public R<String> report(Problem problem) {
         if(StrUtil.isEmpty(problem.getContent())
@@ -70,5 +79,17 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         }
         removeById(id);
         return R.success("删除成功");
+    }
+
+    @Override
+    @Transactional
+    public R<Page> pageAll(int page, int pageSize, String condition) {
+        log.info("page={},pageSize={}",page,pageSize);
+        //构造分页构造器
+        Page pageInfo=new Page();
+
+        List<ProblemDTO> problemDTOList = problemMapper.pageAllProblem(page-1,pageSize,condition);
+        pageInfo.setRecords(problemDTOList);
+        return R.success(pageInfo);
     }
 }
