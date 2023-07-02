@@ -92,4 +92,12 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         pageInfo.setRecords(problemDTOList);
         return R.success(pageInfo);
     }
+
+    @Override
+    public R<ProblemDTO> getDetail(Long id) {
+        if(id==null){
+            return R.error("查询失败");
+        }
+        return R.success(problemMapper.getDetail(id));
+    }
 }

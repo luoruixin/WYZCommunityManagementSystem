@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -271,7 +272,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     //TODO:实名认证功能完善
     @Override
     @Transactional  //这里要同时操纵user和userRecord表
-    public R<String> realNameIdentify(RealNameFormDTO realNameFormDTO, HttpSession session) {
+    public R<String> realNameIdentify(HttpServletRequest request, RealNameFormDTO realNameFormDTO, HttpSession session) {
         String realName=realNameFormDTO.getName();
         String idCard=realNameFormDTO.getIdCard();
         if(StrUtil.isEmpty(realName)||StrUtil.isEmpty(idCard)){
@@ -315,6 +316,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userRecord1.setPhone(user.getPhone());
             userRecord1.setName(realName);
             userRecordService.updateById(userRecord1);
+            //更新redis中的值并删除ThreadHolder中的值
+            String token = request.getHeader("authorization");
+            Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries("login:token:" + token);
+            userMap.put("type",String.valueOf(user.getType()));
+            userMap.put("examine",String.valueOf(user.getExamine().toString()));
+            userMap.put("name",user.getName());
+            userMap.put("idCard",user.getIdCard());
+            stringRedisTemplate.opsForHash().putAll("login:token:" +token,userMap);
+
+            UserHolder.removeUser();
             return R.success("实名认证成功");
         }
 
@@ -325,6 +336,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userRecord.setTime(LocalDateTime.now());
         userRecord.setUsername(user.getNickname());
         userRecordService.save(userRecord);
+        //更新redis中的值并删除ThreadHolder中的值
+        String token = request.getHeader("authorization");
+        Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries("login:token:" +token);
+        userMap.put("type",String.valueOf(user.getType()));
+        userMap.put("examine",String.valueOf(user.getExamine().toString()));
+        userMap.put("name",user.getName());
+        userMap.put("idCard",user.getIdCard());
+        stringRedisTemplate.opsForHash().putAll("login:token:" +token,userMap);
+        UserHolder.removeUser();
         return R.success("实名认证成功");
     }
 

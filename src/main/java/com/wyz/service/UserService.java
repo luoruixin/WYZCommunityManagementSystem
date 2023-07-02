@@ -5,6 +5,7 @@ import com.wyz.common.R;
 import com.wyz.dto.*;
 import com.wyz.entity.User;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public interface UserService extends IService<User> {
@@ -22,7 +23,7 @@ public interface UserService extends IService<User> {
 
     R<String> updatePhone(UpdatePhoneFormDTO updatePhoneFormDTO, HttpSession session);
 
-    R<String> realNameIdentify(RealNameFormDTO realNameFormDTO, HttpSession session);
+    R<String> realNameIdentify(HttpServletRequest request, RealNameFormDTO realNameFormDTO, HttpSession session);
 
     R<String> writeOff();
 
