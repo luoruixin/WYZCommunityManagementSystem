@@ -18,6 +18,7 @@
                     AND (category LIKE CONCAT('%', #{condition}, '%') OR title LIKE CONCAT('%', #{condition}, '%'))
                 </if>
             </where>
-            limit #{page},#{pageSize};
+        order by create_time desc
+        limit #{page},#{pageSize};
     </select>
 </mapper>

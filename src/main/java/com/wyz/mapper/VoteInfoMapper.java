@@ -12,6 +12,6 @@ import java.util.List;
 
 @Mapper
 public interface VoteInfoMapper extends BaseMapper<VoteInfo> {
-    @Select("select * from vote_info where end_time>#{localDate} and #{houseNum} like concat(join_code,'%') limit #{page},#{pageSize};")
+    @Select("select * from vote_info where end_time>#{localDate} and #{houseNum} like concat(join_code,'%') order by start_time desc limit #{page},#{pageSize};")
     public List<VoteInfo> selectPageCan(@Param("page") int page,@Param("pageSize") int pageSize,@Param("localDate") LocalDate localDate,@Param("houseNum") String houseNum);
 }

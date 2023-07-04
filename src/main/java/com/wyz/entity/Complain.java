@@ -8,7 +8,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@TableName("problem")
+@TableName("complain")
 public class Complain {
     @TableId(value = "id")
     private Long id;

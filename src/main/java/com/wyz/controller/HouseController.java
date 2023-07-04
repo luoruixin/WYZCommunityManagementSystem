@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/house")
@@ -33,7 +35,7 @@ public class HouseController {
 
     //房屋的分级查询
     @GetMapping("/selectByLevel")
-    public R<HouseJsonByLevel> selectByLevel(){
+    public R<List<HouseJsonByLevel>> selectByLevel(){
 
         return houseService.selectByLevel();
 

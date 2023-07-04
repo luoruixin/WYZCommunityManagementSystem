@@ -65,57 +65,68 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         return R.success("房屋关系绑定成功");
     }
 
+    //TODO:这里必须存在redis中
     @Override
-    public R<HouseJsonByLevel> selectByLevel() {
+    public R<List<HouseJsonByLevel>> selectByLevel() {
         List<House> houses = query().isNull("user_id").orderByAsc("num").list();
-        HouseJsonByLevel houseJsonByLevel = new HouseJsonByLevel();
-        Map<String, HouseJsonByLevel.Area> areaMap = new HashMap<>();
-
+        List<HouseJsonByLevel> houseJsonByLevelList = new ArrayList<>();
         for (House house : houses) {
-            String area = house.getArea();
-            String apart = house.getApart();
-            String cell = house.getCell();
+            String areaName = house.getArea();
+            String apartName = house.getApart();
+            String cellName = house.getCell();
             String houseCode = house.getHouseCode();
 
-            HouseJsonByLevel.Area areaObj = areaMap.get(area);
-            if (areaObj == null) {
-                areaObj = new HouseJsonByLevel.Area();
-                areaMap.put(area, areaObj);
+            HouseJsonByLevel houseJsonByLevel = null;
+            for (HouseJsonByLevel jsonByLevel : houseJsonByLevelList) {
+                if (jsonByLevel.getAreaName().equals(areaName)) {
+                    houseJsonByLevel = jsonByLevel;
+                    break;
+                }
             }
 
-            Map<String, HouseJsonByLevel.Apart> apartMap = areaObj.getAparts();
-            if (apartMap == null) {
-                apartMap = new HashMap<>();
-                areaObj.setAparts(apartMap);
+            if(houseJsonByLevel==null){
+                houseJsonByLevel=new HouseJsonByLevel();
+                houseJsonByLevel.setAreaName(areaName);
+                houseJsonByLevel.setApartList(new ArrayList<>());
             }
 
-            HouseJsonByLevel.Apart apartObj = apartMap.get(apart);
-            if (apartObj == null) {
-                apartObj = new HouseJsonByLevel.Apart();
-                apartMap.put(apart, apartObj);
+            // Find or create the corresponding Apart object
+            HouseJsonByLevel.Apart apart = null;
+            for (HouseJsonByLevel.Apart existingApart : houseJsonByLevel.getApartList()) {
+                if (existingApart.getApartName().equals(apartName)) {
+                    apart = existingApart;
+                    break;
+                }
             }
 
-            Map<String, HouseJsonByLevel.Cell> cellMap = apartObj.getCells();
-            if (cellMap == null) {
-                cellMap = new HashMap<>();
-                apartObj.setCells(cellMap);
+            if (apart == null) {
+                apart = new HouseJsonByLevel.Apart();
+                apart.setApartName(apartName);
+                apart.setCellList(new ArrayList<>());
+                houseJsonByLevel.getApartList().add(apart);
             }
 
-            HouseJsonByLevel.Cell cellObj = cellMap.get(cell);
-            if (cellObj == null) {
-                cellObj = new HouseJsonByLevel.Cell();
-                cellObj.setCodes(new String[]{});
-                cellMap.put(cell, cellObj);
+            // Find or create the corresponding Cell object
+            HouseJsonByLevel.Cell cell = null;
+            for (HouseJsonByLevel.Cell existingCell : apart.getCellList()) {
+                if (existingCell.getCellName().equals(cellName)) {
+                    cell = existingCell;
+                    break;
+                }
+            }
+            if (cell == null) {
+                cell = new HouseJsonByLevel.Cell();
+                cell.setCellName(cellName);
+                cell.setHouseCodeList(new ArrayList<>());
+                apart.getCellList().add(cell);
             }
 
-            String[] codes = cellObj.getCodes();
-            String[] newCodes = Arrays.copyOf(codes, codes.length + 1);
-            newCodes[codes.length] = houseCode;
-            cellObj.setCodes(newCodes);
+            // Add the houseCode to the houseList
+            cell.getHouseCodeList().add(houseCode);
+            houseJsonByLevelList.add(houseJsonByLevel);
+
         }
-
-        houseJsonByLevel.setAreas(areaMap);
-        return R.success(houseJsonByLevel);
+        return R.success(houseJsonByLevelList);
     }
 
     @Override

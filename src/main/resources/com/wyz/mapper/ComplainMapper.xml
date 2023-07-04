@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyz.mapper.ComplainMapper">
+    <resultMap id="complainDTOResultMap" type="com.wyz.dto.ComplainDTO">
+
+    </resultMap>
+
+    <select id="pageAll" resultType="com.wyz.dto.ComplainDTO">
+        select * from complain inner join user on complain.user_id = user.id
+        <where>
+            <if test="condition != null and condition != ''">
+                AND (content LIKE CONCAT('%', #{condition}, '%') OR title LIKE CONCAT('%', #{condition}, '%'))
+            </if>
+        </where>
+        order by create_time desc
+        limit #{page},#{pageSize};
+    </select>
+    <select id="getPageAllTotal" resultType="java.lang.Integer">
+        select count(*) from complain inner join user on complain.user_id = user.id
+        <where>
+            <if test="condition != null and condition != ''">
+                AND (content LIKE CONCAT('%', #{condition}, '%') OR title LIKE CONCAT('%', #{condition}, '%'))
+            </if>
+        </where>
+        order by create_time desc;
+    </select>
+    <select id="getDetail" resultType="com.wyz.dto.ComplainDTO">
+        select * from complain inner join user on complain.user_id = user.id
+        where complain.id=#{id}
+    </select>
+</mapper>

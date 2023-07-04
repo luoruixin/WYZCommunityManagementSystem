@@ -7,10 +7,12 @@ import com.wyz.common.R;
 import com.wyz.dto.BindHouseFormDTO;
 import com.wyz.entity.House;
 
+import java.util.List;
+
 public interface HouseService extends IService<House> {
     R<String> bindHouse(BindHouseFormDTO house);
 
-    R<HouseJsonByLevel> selectByLevel();
+    R<List<HouseJsonByLevel>> selectByLevel();
 
     R<String> deleteHouse(String houseId);
 

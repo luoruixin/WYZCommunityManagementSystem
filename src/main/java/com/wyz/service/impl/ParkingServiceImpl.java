@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
+import com.wyz.dto.HouseJsonByLevel;
 import com.wyz.dto.ParkingJsonByLevel;
 import com.wyz.entity.Parking;
 import com.wyz.mapper.ParkingMapper;
@@ -15,30 +16,34 @@ import java.util.*;
 @Service
 public class ParkingServiceImpl extends ServiceImpl<ParkingMapper, Parking> implements ParkingService {
     @Override
-    public R<ParkingJsonByLevel> selectUnused() {
+    public R<List<ParkingJsonByLevel>> selectUnused() {
         List<Parking> parkings = query().isNull("user_id").orderByAsc("parking_num").list();
-        ParkingJsonByLevel parkingJsonByLevel=new ParkingJsonByLevel();
-        Map<String, ParkingJsonByLevel.Area> areaMap = new HashMap<>();
+        List<ParkingJsonByLevel> parkingJsonByLevelList=new ArrayList<>();
 
         for (Parking parking : parkings) {
-            String area = parking.getArea();
             String parkingNum = parking.getParkingNum();
+            String areaName = parking.getArea();
 
-            ParkingJsonByLevel.Area areaObj = areaMap.get(area);
-            if (areaObj == null) {
-                areaObj = new ParkingJsonByLevel.Area();
-                areaObj.setCodes(new String[]{});
-                areaMap.put(area, areaObj);
+            ParkingJsonByLevel parkingJsonByLevel=null;
+            for (ParkingJsonByLevel jsonByLevel : parkingJsonByLevelList) {
+                if (jsonByLevel.getAreaName().equals(areaName)) {
+                    parkingJsonByLevel = jsonByLevel;
+                    break;
+                }
+            }
+            if(parkingJsonByLevel==null){
+                parkingJsonByLevel=new ParkingJsonByLevel();
+                parkingJsonByLevel.setAreaName(areaName);
+                parkingJsonByLevel.setCodes(new ArrayList<>());
+                parkingJsonByLevel.getCodes().add(parkingNum);
+                parkingJsonByLevelList.add(parkingJsonByLevel);
+            }else {
+                parkingJsonByLevel.getCodes().add(parkingNum);
             }
 
-            String[] codes = areaObj.getCodes();
-            String[] newCodes = Arrays.copyOf(codes, codes.length + 1);
-            newCodes[codes.length] = parkingNum;
-            areaObj.setCodes(newCodes);
         }
 
-        parkingJsonByLevel.setAreas(areaMap);
-        return R.success(parkingJsonByLevel);
+        return R.success(parkingJsonByLevelList);
     }
 
     @Override

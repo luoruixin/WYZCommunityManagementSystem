@@ -5,8 +5,10 @@ import com.wyz.common.R;
 import com.wyz.dto.ParkingJsonByLevel;
 import com.wyz.entity.Parking;
 
+import java.util.List;
+
 public interface ParkingService extends IService<Parking> {
-    R<ParkingJsonByLevel> selectUnused();
+    R<List<ParkingJsonByLevel>> selectUnused();
 
     R<String> bindParking(Parking parking);
 

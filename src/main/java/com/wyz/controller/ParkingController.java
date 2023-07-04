@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/parking")
@@ -31,7 +33,7 @@ public class ParkingController {
 
     //查询还未被绑定的车位
     @GetMapping("/selectUnused")
-    public R<ParkingJsonByLevel> selectUnused(){
+    public R<List<ParkingJsonByLevel>> selectUnused(){
 
         return parkingService.selectUnused();
 
