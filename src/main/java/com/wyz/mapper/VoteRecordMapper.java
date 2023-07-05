@@ -16,4 +16,8 @@ public interface VoteRecordMapper extends BaseMapper<VoteRecord> {
     })
     @Select("select * from vote_record inner join vote_info on vote_record.v_info_id=vote_info.id where vote_record.user_id=#{userId} limit #{page},#{pageSize};")
     public List<VoteRecordDTO> selectMe(@Param("page") int page, @Param("pageSize") int pageSize, @Param("userId") Long userId);
+
+
+    @Select("select count(*) from vote_record inner join vote_info on vote_record.v_info_id=vote_info.id where vote_record.user_id=#{userId};")
+    public Integer getSelectMeTotal( @Param("userId") Long userId);
 }

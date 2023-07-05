@@ -110,11 +110,14 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
         //构造分页构造器
         Page pageInfo=new Page(page,pageSize);
 
-        List<VoteRecordDTO> voteRecordDTOList = voteRecordMapper.selectMe(page-1, pageSize, user.getId());
+        List<VoteRecordDTO> voteRecordDTOList = voteRecordMapper.selectMe((page-1)*pageSize, pageSize, user.getId());
         pageInfo.setRecords(voteRecordDTOList);
+
+        pageInfo.setTotal(voteRecordMapper.getSelectMeTotal(user.getId()));
         return R.success(pageInfo);
     }
 
+    //TODO:添加total
     @Override
     @Transactional
     public R<Page> pageCan(int page, int pageSize) {
@@ -127,7 +130,7 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
         List<VoteInfo> voteInfoList1=new ArrayList<>();
         //先分页查询
         for (String houseNum : houseNumList) {
-            List<VoteInfo> voteInfoList = voteInfoMapper.selectPageCan(page-1, pageSize, localDate, houseNum);
+            List<VoteInfo> voteInfoList = voteInfoMapper.selectPageCan((page-1)*pageSize, pageSize, localDate, houseNum);
             voteInfoList1.addAll(voteInfoList);
         }
         //再去除已经投票了的

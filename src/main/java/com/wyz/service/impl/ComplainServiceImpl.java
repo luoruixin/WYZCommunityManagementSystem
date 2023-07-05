@@ -73,7 +73,8 @@ public class ComplainServiceImpl extends ServiceImpl<ComplainMapper, Complain> i
         //构造分页构造器对象
         Page<ComplainDTO> pageInfo=new Page<>(page,pageSize);
 
-        List<ComplainDTO> complainDTOList = complainMapper.pageAll(page, pageSize, condition);
+        int initialIndex=(page-1)*pageSize;
+        List<ComplainDTO> complainDTOList = complainMapper.pageAll(initialIndex, pageSize, condition);
         pageInfo.setRecords(complainDTOList);
 
         Integer total=complainMapper.getPageAllTotal();

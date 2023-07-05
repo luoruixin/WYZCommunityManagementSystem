@@ -88,7 +88,8 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         //构造分页构造器
         Page pageInfo=new Page();
 
-        List<ProblemDTO> problemDTOList = problemMapper.pageAllProblem(page-1,pageSize,condition);
+        int initialIndex=(page-1)*pageSize;
+        List<ProblemDTO> problemDTOList = problemMapper.pageAllProblem(initialIndex,pageSize,condition);
         pageInfo.setRecords(problemDTOList);
 
         Integer total=problemMapper.getPageAllProblemTotal();
