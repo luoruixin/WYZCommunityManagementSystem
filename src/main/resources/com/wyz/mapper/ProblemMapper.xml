@@ -21,4 +21,13 @@
         order by create_time desc
         limit #{page},#{pageSize};
     </select>
+    <select id="getPageAllProblemTotal" resultType="java.lang.Integer">
+        select count(*) from problem inner join user on problem.user_id = user.id
+        <where>
+            <if test="condition != null and condition != ''">
+                AND (category LIKE CONCAT('%', #{condition}, '%') OR title LIKE CONCAT('%', #{condition}, '%'))
+            </if>
+        </where>
+        order by create_time desc;
+    </select>
 </mapper>

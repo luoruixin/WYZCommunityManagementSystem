@@ -8,6 +8,7 @@ import com.wyz.service.VoteInfoService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -30,8 +31,10 @@ public class CommitteeVoteController {
 
     //投票分页查询
     @GetMapping("/page")
+    @Cacheable(value = "committeeVoteCache",key = "#root.methodName",condition = "#result!=null")
     public R<Page> pageR(int page,int pageSize,String condition){
-        return voteInfoService.pageR(page,pageSize,condition);
+        R<Page> r = voteInfoService.pageR(page, pageSize, condition);
+        return r;
     }
 
     //查询自己发布的投票

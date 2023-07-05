@@ -90,6 +90,9 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
 
         List<ProblemDTO> problemDTOList = problemMapper.pageAllProblem(page-1,pageSize,condition);
         pageInfo.setRecords(problemDTOList);
+
+        Integer total=problemMapper.getPageAllProblemTotal();
+        pageInfo.setTotal(total);
         return R.success(pageInfo);
     }
 

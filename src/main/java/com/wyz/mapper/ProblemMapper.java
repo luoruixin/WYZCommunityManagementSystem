@@ -20,4 +20,6 @@ public interface ProblemMapper extends BaseMapper<Problem> {
     })
     @Select("select * from problem inner join user on problem.user_id = user.id where problem.id=#{id}")
     public ProblemDTO getDetail(@Param("id") Long id);
+
+    Integer getPageAllProblemTotal();
 }

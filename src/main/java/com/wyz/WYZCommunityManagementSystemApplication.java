@@ -4,7 +4,9 @@ import cn.hutool.core.util.StrUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.io.File;
@@ -16,7 +18,8 @@ import java.util.UUID;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy(exposeProxy = true) //暴露代理对象
-//@MapperScan("com.wyz.mapper")
+@EnableTransactionManagement//开启事务注解的支持
+@EnableCaching   //开启cache
 public class WYZCommunityManagementSystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(WYZCommunityManagementSystemApplication.class, args);

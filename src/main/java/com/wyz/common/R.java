@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 //此类是一个通用结果类,服务端响应的所有结果最终都会包装成此种类型返回给前端页面
-//注意这里要实现序列化接口，这样spring-cache才能序列化
+//注意这里要实现序列化接口Serializable，这样spring-cache才能序列化
 @Data
 public class R<T> implements Serializable {
 
