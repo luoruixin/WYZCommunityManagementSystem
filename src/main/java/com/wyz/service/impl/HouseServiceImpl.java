@@ -88,6 +88,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
                 houseJsonByLevel=new HouseJsonByLevel();
                 houseJsonByLevel.setAreaName(areaName);
                 houseJsonByLevel.setApartList(new ArrayList<>());
+                houseJsonByLevelList.add(houseJsonByLevel);
             }
 
             // Find or create the corresponding Apart object
@@ -123,7 +124,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 
             // Add the houseCode to the houseList
             cell.getHouseCodeList().add(houseCode);
-            houseJsonByLevelList.add(houseJsonByLevel);
+
 
         }
         return R.success(houseJsonByLevelList);

@@ -31,8 +31,8 @@ public class CarController {
     //删除车辆
     @DeleteMapping("/delete")
     public R<String> delete(@RequestParam Long id){
-
-        return R.error("网络繁忙，请重试");
+        carService.removeById(id);
+        return R.success("删除成功");
 
     }
 
