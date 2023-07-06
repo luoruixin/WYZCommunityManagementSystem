@@ -20,13 +20,13 @@ public class CommitteeProblemController {
     @Autowired
     private ProblemService problemService;
     @GetMapping("/page")
-    @Cacheable(value = "committeeProblemCache",key = "'pageR'",condition = "#condition==null")
+    @Cacheable(value = "committeeProblemCache:pageR",key = "#page+#pageSize",condition = "#condition==null")
     public R<Page> pageR(int page,int pageSize,String condition){
         return problemService.pageAll(page,pageSize,condition);
     }
 
     @GetMapping("/detail")
-    @Cacheable(value = "committeeProblem",key = "'getDetail:'+#id")
+    @Cacheable(value = "committeeProblem:getDetail",key = "#id")
     public R<ProblemDTO> getDetail(@RequestParam("id")Long id){
         return problemService.getDetail(id);
     }

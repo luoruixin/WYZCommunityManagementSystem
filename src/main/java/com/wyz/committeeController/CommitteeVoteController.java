@@ -25,14 +25,14 @@ public class CommitteeVoteController {
 
     //发布投票
     @PostMapping("/publish")
-    @CacheEvict(value = "committeeVoteCache",key = "'pageR'")
+    @CacheEvict(value = "committeeVoteCache:pageR",allEntries = true)
     public R<String> publish(@RequestBody VoteInfoDTO voteInfoDTO){
         return voteInfoService.publish(voteInfoDTO);
     }
 
     //投票分页查询
     @GetMapping("/page")
-    @Cacheable(value = "committeeVoteCache",key = "'pageR'",unless = "#result==null||#condition!=null")
+    @Cacheable(value = "committeeVoteCache:pageR",key = "#page+#pageSize",unless = "#result==null||#condition!=null")
     public R<Page> pageR(int page,int pageSize,String condition){
         R<Page> r = voteInfoService.pageR(page, pageSize, condition);
         return r;
@@ -46,7 +46,7 @@ public class CommitteeVoteController {
 
     //删除投票
     @DeleteMapping("/delete")
-    @CacheEvict(value = "committeeVoteCache",key = "'pageR'")
+    @CacheEvict(value = "committeeVoteCache:pageR",allEntries = true)
     public R<String> delete(@RequestParam("id")Long id){
         return voteInfoService.deleteVote(id);
     }
@@ -54,7 +54,7 @@ public class CommitteeVoteController {
     //查看投票详情
     // TODO: 添加分析投票的功能
     @GetMapping("/details")
-    @Cacheable(value = "committeeVote",key = "'getDetail:'+#id")
+    @Cacheable(value = "committeeVoteCache:getDetail",key = "#id")
     public R<VoteInfoDTO> details(@RequestParam("id")Long id){
         return voteInfoService.getDetails(id);
     }

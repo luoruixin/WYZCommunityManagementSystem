@@ -27,7 +27,7 @@ public class ParkingController {
 
     //绑定车位
     @PostMapping("/bindParking")
-    @CacheEvict(value = "parking",key = "'pageR'")
+    @CacheEvict(value = "parking:pageR",allEntries = true)
     public R<String> bindParking(@RequestBody Parking parking){
 
         return parkingService.bindParking(parking);
@@ -44,7 +44,7 @@ public class ParkingController {
 
     //删除车位
     @DeleteMapping("/delete")
-    @CacheEvict(value = "parking",key = "'pageR'")
+    @CacheEvict(value = "parking:pageR",allEntries = true)
     public R<String> delete(@RequestParam String id){
 
         return parkingService.delete(id);
@@ -53,7 +53,7 @@ public class ParkingController {
 
     //分页查询
     @GetMapping("/page")
-    @Cacheable(value = "parking",key = "'pageR'")
+    @Cacheable(value = "parking:pageR",key = "#page+#pageSize")
     public R<Page> pageR(int page,int pageSize){
         //构造分页构造器对象
         Page<Parking> pageInfo=new Page<>(page,pageSize);

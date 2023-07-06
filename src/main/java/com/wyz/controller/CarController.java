@@ -24,7 +24,7 @@ public class CarController {
 
     //添加车位
     @PostMapping("/add")
-    @CacheEvict(value = "car",key = "'pageR'")
+    @CacheEvict(value = "car:pageR",allEntries = true)
     public R<String> add(@RequestBody Car car){
 
         return carService.add(car);
@@ -33,7 +33,7 @@ public class CarController {
 
     //删除车辆
     @DeleteMapping("/delete")
-    @CacheEvict(value = "car",key = "'pageR'")
+    @CacheEvict(value = "car:pageR",allEntries = true)
     public R<String> delete(@RequestParam Long id){
         carService.removeById(id);
         return R.success("删除成功");
@@ -42,7 +42,7 @@ public class CarController {
 
     //分页查询
     @GetMapping("/page")
-    @Cacheable(value = "car",key = "'pageR'")
+    @Cacheable(value = "car:pageR",key = "#page+#pageSize")
     public R<Page> pageR(int page,int pageSize){
         //构造分页构造器对象
         Page<Car> pageInfo=new Page<>(page,pageSize);
@@ -59,7 +59,7 @@ public class CarController {
 
     //修改车辆信息
     @PutMapping("/update")
-    @CacheEvict(value = "car",key = "'pageR'")
+    @CacheEvict(value = "car:pageR",allEntries = true)
     public R<String> update(@RequestBody Car car){
         return carService.updateCar(car);
     }

@@ -27,7 +27,7 @@ public class HouseController {
 
     //绑定房屋
     @PostMapping("/bindHouse")
-    @CacheEvict(value = "house",key = "'pageR'")
+    @CacheEvict(value = "house:pageR",allEntries = true)
     public R<String> bindHouse(@RequestBody BindHouseFormDTO bindHouseFormDTO){
         try{
             return houseService.bindHouse(bindHouseFormDTO);
@@ -46,19 +46,17 @@ public class HouseController {
 
     //删除绑定的房屋
     @DeleteMapping("/delete")
-    @CacheEvict(value = "house",key = "'pageR'")
+    @CacheEvict(value = "house:pageR",allEntries = true)
     public R<String> deleteHouse(@RequestParam("id") String houseId){
         return houseService.deleteHouse(houseId);
     }
 
     //分页查询
     @GetMapping("/page")
-    @Cacheable(value = "house",key = "'pageR'")
+    @Cacheable(value = "house:pageR",key = "#page+#pageSize")
     public R<Page> pageR(int page, int pageSize){
 
         return houseService.pageR(page,pageSize);
 
     }
-
-
 }

@@ -18,13 +18,13 @@ public class ComplainController {
     @Autowired
     private ComplainService complainService;
     @PostMapping("/add")
-    @CacheEvict(value = "complain",key = "'pageMe'")
+    @CacheEvict(value = "complain:pageMe",allEntries = true)
     public R<String> addComplain(@RequestBody Complain complain){
         return complainService.addComplain(complain);
     }
 
     @GetMapping("/pageMe")
-    @Cacheable(value = "complain",key = "'pageMe'")
+    @Cacheable(value = "complain:pageMe",key = "#page+#pageSize")
     public R<Page> pageMe(int page,int pageSize){
         return complainService.pageMe(page,pageSize);
     }

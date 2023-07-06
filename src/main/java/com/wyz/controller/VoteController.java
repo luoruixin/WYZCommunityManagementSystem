@@ -24,14 +24,14 @@ public class VoteController {
 
     //参与投票
     @PostMapping("/joinVote")
-    @CacheEvict(value = "voteCache",key = "'pageMe'")
+    @CacheEvict(value = "voteCache:pageMe",allEntries = true)
     public R<String> joinVote(@RequestParam("id") Long id,@RequestParam("type") Integer type){
         return voteRecordService.joinVote(id,type);
     }
 
     //查看自己参加过的投票
     @GetMapping("/pageMe")
-    @Cacheable(value = "voteCache",key = "'pageMe'")
+    @Cacheable(value = "voteCache:pageMe",key = "#page+#pageSize")
     public R<Page> pageMe(int page,int pageSize){
         return voteRecordService.pageMe(page,pageSize);
     }
