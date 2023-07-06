@@ -19,13 +19,13 @@ public class CommitteeComplainController {
     @Autowired
     private ComplainService complainService;
     @GetMapping("/pageAll")
-    @Cacheable(value = "CommitteeComplain",key = "'pageAll:'+#page+#pageSize",condition = "#condition==null")
+    @Cacheable(value = "CommitteeComplain:pageAll",key = "#page+#pageSize",condition = "#condition==null")
     public R<Page> pageAll(int page,int pageSize,String condition){
         return complainService.pageAll(page,pageSize,condition);
     }
 
     @GetMapping("/detail")
-    @Cacheable(value = "CommitteeComplain",key = "'getDetail:'+#id")
+    @Cacheable(value = "CommitteeComplain:getDetail",key = "#id")
     public R<ComplainDTO> getDetail(@RequestParam("id")Long id){
         return complainService.getDetail(id);
     }

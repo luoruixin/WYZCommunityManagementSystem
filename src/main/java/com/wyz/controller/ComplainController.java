@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,10 @@ public class ComplainController {
     @Autowired
     private ComplainService complainService;
     @PostMapping("/add")
-    @CacheEvict(value = "complain:pageMe",allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "complain:pageMe",allEntries = true),
+//            @CacheEvict(value = "CommitteeComplain:pageAll", allEntries = true)
+    })
     public R<String> addComplain(@RequestBody Complain complain){
         return complainService.addComplain(complain);
     }
