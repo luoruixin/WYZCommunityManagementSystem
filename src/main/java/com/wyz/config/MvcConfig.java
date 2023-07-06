@@ -51,17 +51,19 @@ public class MvcConfig implements WebMvcConfigurer {
                 "/house/page"
 
         ).order(2);
-        registry.addInterceptor(new HandleOtherInterceptor()).addPathPatterns(
-                "/house/bindHouse",
-                "/house/selectByLevel",
-                "/house/delete",
+        registry.addInterceptor(new HandleHouseBindingInterceptor()).addPathPatterns(
+                "/house/bindHouse"
+        ).order(3);
+        registry.addInterceptor(new HandleResidentInterceptor()).addPathPatterns(
                 "/car/**",
-                "/parking/**",
                 "/problem/**",
                 "/complain/**",
                 "/file/**"
         ).order(3);
-        registry.addInterceptor(new HandleVoteInterceptor()).addPathPatterns(
+        registry.addInterceptor(new HandleOwnerInterceptor()).addPathPatterns(
+                "/house/selectByLevel",
+                "/house/delete",
+                "/parking/**",
                 "/familyRelationship/**",
                 "/vote/**"
         ).order(4);
