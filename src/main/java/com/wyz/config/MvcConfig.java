@@ -47,10 +47,14 @@ public class MvcConfig implements WebMvcConfigurer {
 
         //下面的几个拦截器是互斥的关系，为了提升性能
         registry.addInterceptor(new HandleHouseInterceptor()).addPathPatterns(
-                "/house/**"
+                //家人只能查询房屋
+                "/house/page"
 
         ).order(2);
         registry.addInterceptor(new HandleOtherInterceptor()).addPathPatterns(
+                "/house/bindHouse",
+                "/house/selectByLevel",
+                "/house/delete",
                 "/car/**",
                 "/parking/**",
                 "/problem/**",
