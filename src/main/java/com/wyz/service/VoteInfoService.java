@@ -8,6 +8,8 @@ import com.wyz.dto.VoteInfoDTO;
 import com.wyz.entity.VoteInfo;
 import org.springframework.cache.annotation.Cacheable;
 
+import java.util.List;
+
 public interface VoteInfoService extends IService<VoteInfo> {
     R<String> publish(VoteInfoDTO voteInfo);
 
@@ -20,4 +22,6 @@ public interface VoteInfoService extends IService<VoteInfo> {
     R<VoteInfoDTO> getDetails(Long id);
 
     R<VoteCountDTO> countVote(Long id);
+
+    R<List<String>> getAparts();
 }

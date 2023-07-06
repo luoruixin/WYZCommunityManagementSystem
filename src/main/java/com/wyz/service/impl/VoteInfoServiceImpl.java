@@ -186,4 +186,13 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         voteCountDTO.setAbstentionRatio(abstentionRatio);
         return R.success(voteCountDTO);
     }
+
+    @Override
+    @Transactional
+    public R<List<String>> getAparts() {
+        Long id = UserHolder.getUser().getId();
+        String area = houseService.query().eq("user_id", id).one().getArea();
+        List<String> apartList = houseService.query().eq("area", area).list().stream().map(a -> a.getApart()).collect(Collectors.toList());
+        return R.success(apartList);
+    }
 }

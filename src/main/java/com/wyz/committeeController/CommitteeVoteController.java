@@ -14,6 +14,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/committeeVote")
@@ -28,6 +30,13 @@ public class CommitteeVoteController {
     @CacheEvict(value = "committeeVoteCache:pageR",allEntries = true)
     public R<String> publish(@RequestBody VoteInfoDTO voteInfoDTO){
         return voteInfoService.publish(voteInfoDTO);
+    }
+
+    //查询业委会成员所在小区的所有楼栋
+    @GetMapping("/getAparts")
+    @Cacheable(value = "committeeVoteCache:getAparts",key = "T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
+    public R<List<String>> getAparts(){
+        return voteInfoService.getAparts();
     }
 
     //投票分页查询
