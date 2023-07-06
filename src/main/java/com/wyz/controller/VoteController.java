@@ -16,6 +16,7 @@ public class VoteController {
 
     //查询现在能参加的投票
     @GetMapping("/pageCan")
+
     public R<Page> pageCan(int page,int pageSize){
         return voteRecordService.pageCan(page,pageSize);
     }

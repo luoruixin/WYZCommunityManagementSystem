@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.wyz.common.R;
 import com.wyz.dto.VoteInfoDTO;
 import com.wyz.entity.VoteInfo;
+import org.springframework.cache.annotation.Cacheable;
 
 public interface VoteInfoService extends IService<VoteInfo> {
     R<String> publish(VoteInfoDTO voteInfo);

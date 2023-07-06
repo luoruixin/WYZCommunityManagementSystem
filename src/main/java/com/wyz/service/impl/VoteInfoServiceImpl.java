@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -53,6 +54,14 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         String apart = voteInfoDto.getApart();
 
         String apartNum=new String();
+        House house1 = houseService.query().eq("user_id", UserHolder.getUser().getId()).one();
+        String areaNum = house1.getNum().substring(0, 2);
+        String area = house1.getArea();
+        //apartList是业委会成员所在小区的所有楼栋
+        List<String> apartList = houseService.query().eq("area", area).list().stream().map(a -> a.getApart()).collect(Collectors.toList());
+        if(!apartList.contains(apart)){
+            return R.error("您选择的楼栋无效");
+        }
         if(!apart.contains("全部")){
             House house = houseService.query().eq("apart", apart).last("limit 1").one();
             if(house==null){
@@ -66,8 +75,6 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         }else {
             apartNum="00";
         }
-
-        String areaNum = houseService.query().eq("user_id", UserHolder.getUser().getId()).one().getNum().substring(0, 2);
         voteInfoDto.setJoinCode(areaNum+apartNum);
         voteInfoDto.setCreateUserId(UserHolder.getUser().getId());
         voteInfoDto.setStartTime(LocalDate.now());

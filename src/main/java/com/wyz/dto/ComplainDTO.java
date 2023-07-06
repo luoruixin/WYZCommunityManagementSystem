@@ -6,10 +6,11 @@ import com.wyz.entity.Complain;
 import lombok.Data;
 import lombok.Value;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class ComplainDTO extends Complain {
+public class ComplainDTO extends Complain implements Serializable {
     @TableField(value = "name")
     private String name;
     @TableField(value = "id_card")

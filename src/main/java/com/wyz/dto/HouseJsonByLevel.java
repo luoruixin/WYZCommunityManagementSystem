@@ -2,11 +2,12 @@ package com.wyz.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @Data
-public class HouseJsonByLevel {
+public class HouseJsonByLevel implements Serializable {
 
     private String areaName;
     private List<Apart> apartList;

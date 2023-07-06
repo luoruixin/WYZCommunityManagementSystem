@@ -8,6 +8,8 @@ import com.wyz.service.VoteInfoService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +19,12 @@ import org.springframework.web.bind.annotation.*;
 public class CommitteeVoteController {
     @Autowired
     private VoteInfoService voteInfoService;
+    @Autowired
+    private CacheManager cacheManager;
 
     //发布投票
     @PostMapping("/publish")
+    @CacheEvict(value = "committeeVoteCache",key = "'pageR'")
     public R<String> publish(@RequestBody VoteInfoDTO voteInfoDTO){
         try {
             return voteInfoService.publish(voteInfoDTO);
@@ -31,7 +36,7 @@ public class CommitteeVoteController {
 
     //投票分页查询
     @GetMapping("/page")
-    @Cacheable(value = "committeeVoteCache",key = "#root.methodName",condition = "#result!=null")
+    @Cacheable(value = "committeeVoteCache",key = "'pageR'",unless = "#result==null||#condition!=null")
     public R<Page> pageR(int page,int pageSize,String condition){
         R<Page> r = voteInfoService.pageR(page, pageSize, condition);
         return r;

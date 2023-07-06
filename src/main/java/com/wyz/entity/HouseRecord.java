@@ -6,11 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @TableName("house_record")
-public class HouseRecord {
+public class HouseRecord implements Serializable {
     @TableId(value = "id")
     private Long id;
     @TableField(value = "house_id")

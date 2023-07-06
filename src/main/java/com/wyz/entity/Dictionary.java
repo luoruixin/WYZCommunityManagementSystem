@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @TableName("dictionary")
-public class Dictionary {
+public class Dictionary implements Serializable {
     /**
      * id标识
      */

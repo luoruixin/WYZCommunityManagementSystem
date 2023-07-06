@@ -17,7 +17,7 @@ import java.util.UUID;
 // 优质的 spring/boot/data/security/cloud 框架中文文档尽在 => https://springdoc.cn
 
 @SpringBootApplication
-@EnableAspectJAutoProxy(exposeProxy = true) //暴露代理对象
+//@EnableAspectJAutoProxy(exposeProxy = true) //暴露代理对象
 @EnableTransactionManagement//开启事务注解的支持
 @EnableCaching   //开启cache
 public class WYZCommunityManagementSystemApplication {

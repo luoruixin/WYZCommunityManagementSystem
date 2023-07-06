@@ -30,6 +30,7 @@ spring:
     redis:
       time-to-live: 1800000
     type: redis
+    cache-names: wyzCache
 
 mybatis-plus:
   configuration:

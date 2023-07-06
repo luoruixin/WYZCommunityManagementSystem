@@ -6,12 +6,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @TableName("vote_info")
-public class VoteInfo {
+public class VoteInfo implements Serializable {
     @TableId(value = "id")
     private Long id;
     @TableField(value = "create_user_id")

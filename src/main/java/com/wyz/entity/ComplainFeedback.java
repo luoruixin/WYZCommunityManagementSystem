@@ -5,11 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @TableName("problem_feedback")
-public class ComplainFeedback {
+public class ComplainFeedback implements Serializable {
     @TableId(value = "id")
     private Long id;
     @TableField(value = "complain_id")

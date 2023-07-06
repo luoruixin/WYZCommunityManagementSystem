@@ -4,11 +4,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-public class VoteRecordDTO {
+public class VoteRecordDTO implements Serializable {
     private Long id;
     private Long userId;
     private Long voteInfoId;
