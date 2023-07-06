@@ -34,13 +34,8 @@ public class UserController {
      */
     @PostMapping("/loginByPhone")
     public R<String> loginByPhone(@RequestBody LoginFormDTO loginForm, HttpSession session){
-        try {
-            return userService.loginByPhone(loginForm,session);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return R.error("登录失败");
-        }
+
+        return userService.loginByPhone(loginForm,session);
     }
 
     /**
@@ -49,12 +44,9 @@ public class UserController {
      */
     @PostMapping("/loginByNickName")
     public R<String> loginByNickName(@RequestBody LoginFormDTO loginForm, HttpSession session){
-        try {
-            return userService.loginByNickName(loginForm,session);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("登录失败");
-        }
+
+        return userService.loginByNickName(loginForm,session);
+
     }
 
     /**
@@ -62,14 +54,10 @@ public class UserController {
      */
     @PostMapping("/loginOut")
     public R<String> loginOut(){
-        try {
-            UserHolder.removeUser();
-            return R.success("登出成功");
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return R.error("登录失败");
-        }
+
+        UserHolder.removeUser();
+        return R.success("登出成功");
+
     }
 
 
