@@ -29,4 +29,5 @@ public interface VoteRecordMapper extends BaseMapper<VoteRecord> {
 
     @Select("select count(*) from vote_record where v_info_id=#{id} and vote_type=2;")
     Long getAbstentionNum(Long id);
+
 }

@@ -174,10 +174,11 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         }
         String joinCode = voteInfo.getJoinCode();
         //查询楼栋总人数，未参与投票则视为弃权
-        Long totalNum = Long.valueOf(houseService.query().likeRight("num", joinCode).isNotNull("user_id").count());
+        //requiredNum是应参与人数
         Long favourNum = voteRecordMapper.getFavourNum(id);
         Long opponentNum=voteRecordMapper.getOpponentNum(id);
-        Long abstentionNum=totalNum-favourNum-opponentNum;
+        Long abstentionNum=voteRecordMapper.getAbstentionNum(id);
+        Long totalNum=favourNum+opponentNum+abstentionNum;
         Double favourRatio=favourNum.doubleValue()/totalNum;
         Double opponentRatio=opponentNum.doubleValue()/totalNum;
         Double abstentionRatio=abstentionNum.doubleValue()/totalNum;
