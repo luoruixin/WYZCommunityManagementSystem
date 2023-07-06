@@ -16,6 +16,7 @@ import com.wyz.entity.House;
 import com.wyz.entity.User;
 import com.wyz.entity.VoteInfo;
 import com.wyz.entity.VoteRecord;
+import com.wyz.mapper.HouseMapper;
 import com.wyz.mapper.VoteInfoMapper;
 import com.wyz.mapper.VoteRecordMapper;
 import com.wyz.service.HouseService;
@@ -31,7 +32,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +51,8 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
     private VoteRecordMapper voteRecordMapper;
     @Autowired
     private VoteInfoService voteInfoService;
+    @Autowired
+    private HouseMapper houseMapper;
     @Override
     @Transactional
     public R<String> publish(VoteInfoDTO voteInfoDto) {
@@ -193,6 +199,11 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         Long id = UserHolder.getUser().getId();
         String area = houseService.query().eq("user_id", id).one().getArea();
         List<String> apartList = houseService.query().eq("area", area).list().stream().map(a -> a.getApart()).collect(Collectors.toList());
-        return R.success(apartList);
+        // 使用Set去重
+        Set<String> uniqueSet = new HashSet<>(apartList);
+
+        // 将去重后的元素转换回List（可选）
+        List<String> distinctList = new ArrayList<>(uniqueSet);
+        return R.success(distinctList);
     }
 }
