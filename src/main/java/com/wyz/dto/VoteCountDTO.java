@@ -8,7 +8,4 @@ public class VoteCountDTO {
     private Long favourNum;
     private Long opponentNum;
     private Long abstentionNum;
-    private Double favourRatio;
-    private Double opponentRatio;
-    private Double abstentionRatio;
 }

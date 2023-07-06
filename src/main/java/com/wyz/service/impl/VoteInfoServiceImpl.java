@@ -179,18 +179,12 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         Long opponentNum=voteRecordMapper.getOpponentNum(id);
         Long abstentionNum=voteRecordMapper.getAbstentionNum(id);
         Long totalNum=favourNum+opponentNum+abstentionNum;
-        Double favourRatio=favourNum.doubleValue()/totalNum;
-        Double opponentRatio=opponentNum.doubleValue()/totalNum;
-        Double abstentionRatio=abstentionNum.doubleValue()/totalNum;
 
         VoteCountDTO voteCountDTO=new VoteCountDTO();
         voteCountDTO.setTotalNum(totalNum);
         voteCountDTO.setFavourNum(favourNum);
         voteCountDTO.setOpponentNum(opponentNum);
         voteCountDTO.setAbstentionNum(abstentionNum);
-        voteCountDTO.setFavourRatio(favourRatio);
-        voteCountDTO.setOpponentRatio(opponentRatio);
-        voteCountDTO.setAbstentionRatio(abstentionRatio);
         return R.success(voteCountDTO);
     }
 
