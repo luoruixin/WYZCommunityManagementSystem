@@ -199,11 +199,8 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         Long id = UserHolder.getUser().getId();
         String area = houseService.query().eq("user_id", id).one().getArea();
         List<String> apartList = houseService.query().eq("area", area).list().stream().map(a -> a.getApart()).collect(Collectors.toList());
-        // 使用Set去重
-        Set<String> uniqueSet = new HashSet<>(apartList);
-
         // 将去重后的元素转换回List（可选）
-        List<String> distinctList = new ArrayList<>(uniqueSet);
+        List<String> distinctList = apartList.stream().distinct().collect(Collectors.toList());
         return R.success(distinctList);
     }
 }
