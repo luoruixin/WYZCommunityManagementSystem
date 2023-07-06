@@ -52,6 +52,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
         ).order(2);
         registry.addInterceptor(new HandleHouseBindingInterceptor()).addPathPatterns(
+                "/house/selectByLevel",
                 "/house/bindHouse"
         ).order(3);
         registry.addInterceptor(new HandleResidentInterceptor()).addPathPatterns(
@@ -61,7 +62,6 @@ public class MvcConfig implements WebMvcConfigurer {
                 "/file/**"
         ).order(3);
         registry.addInterceptor(new HandleOwnerInterceptor()).addPathPatterns(
-                "/house/selectByLevel",
                 "/house/delete",
                 "/parking/**",
                 "/familyRelationship/**",
