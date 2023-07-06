@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wyz.common.CustomException;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.dto.ProblemDTO;
@@ -31,13 +32,13 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         if(StrUtil.isEmpty(problem.getContent())
             ||StrUtil.isEmpty(problem.getCategory())
             ||StrUtil.isEmpty(problem.getTitle())){
-            return R.success("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         LocalDate localDate = LocalDateTime.now().toLocalDate();
         List<Problem> problemList = query().eq("user_id", UserHolder.getUser().getId()).like("create_time", localDate).list();
         if(problemList.size()>2){
             //防止一天内上报问题的次数过多
-            return R.error("您已经达到今天的上限");
+            throw new CustomException("您已经达到今天的上限");
         }
         problem.setUserId(UserHolder.getUser().getId());
         problem.setStatus(0);
@@ -66,7 +67,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
         if(StrUtil.isEmpty(problem.getContent())
                 ||StrUtil.isEmpty(problem.getCategory())
                 ||StrUtil.isEmpty(problem.getTitle())){
-            return R.success("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         updateById(problem);
         return R.success("更新成功");
@@ -75,7 +76,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     @Override
     public R<String> deleteProblem(Long id) {
         if(id==null){
-            return R.error("删除无效");
+            throw new CustomException("删除无效");
         }
         removeById(id);
         return R.success("删除成功");
@@ -100,7 +101,7 @@ public class ProblemServiceImpl extends ServiceImpl<ProblemMapper, Problem> impl
     @Override
     public R<ProblemDTO> getDetail(Long id) {
         if(id==null){
-            return R.error("查询失败");
+            throw new CustomException("查询失败");
         }
         return R.success(problemMapper.getDetail(id));
     }

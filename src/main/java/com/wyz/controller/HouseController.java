@@ -43,13 +43,8 @@ public class HouseController {
 
     //删除绑定的房屋
     @DeleteMapping("/delete")
-    public R<String> deleteHouse(@RequestParam String houseId){
-        try{
-            return houseService.deleteHouse(houseId);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("房屋删除失败，请重试");
-        }
+    public R<String> deleteHouse(@RequestParam("id") String houseId){
+        return houseService.deleteHouse(houseId);
     }
 
     //分页查询

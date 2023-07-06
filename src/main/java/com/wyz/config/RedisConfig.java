@@ -82,7 +82,9 @@ public class RedisConfig {
         RedisCacheWriter redisCacheWriter = RedisCacheWriter
                 .nonLockingRedisCacheWriter(redisTemplate.getConnectionFactory());
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
-                .defaultCacheConfig().serializeValuesWith(
+                .defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(30))   //设置缓存的过期时间为30分钟
+                .serializeValuesWith(
                         RedisSerializationContext.SerializationPair.fromSerializer(redisTemplate
                                 .getValueSerializer()));
         return new RedisCacheManager(redisCacheWriter, redisCacheConfiguration);

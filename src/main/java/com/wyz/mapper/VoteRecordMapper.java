@@ -20,4 +20,13 @@ public interface VoteRecordMapper extends BaseMapper<VoteRecord> {
 
     @Select("select count(*) from vote_record inner join vote_info on vote_record.v_info_id=vote_info.id where vote_record.user_id=#{userId};")
     public Integer getSelectMeTotal( @Param("userId") Long userId);
+
+    @Select("select count(*) from vote_record where v_info_id=#{id} and vote_type=1;")
+    public Long getFavourNum(Long id);
+
+    @Select("select count(*) from vote_record where v_info_id=#{id} and vote_type=0;")
+    Long getOpponentNum(Long id);
+
+    @Select("select count(*) from vote_record where v_info_id=#{id} and vote_type=2;")
+    Long getAbstentionNum(Long id);
 }

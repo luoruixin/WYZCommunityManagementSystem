@@ -6,6 +6,7 @@ import com.wyz.dto.ComplainDTO;
 import com.wyz.service.ComplainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,11 +19,13 @@ public class CommitteeComplainController {
     @Autowired
     private ComplainService complainService;
     @GetMapping("/pageAll")
+    @Cacheable(value = "CommitteeComplain",key = "'pageAll'",condition = "#condition==null")
     public R<Page> pageAll(int page,int pageSize,String condition){
         return complainService.pageAll(page,pageSize,condition);
     }
 
     @GetMapping("/detail")
+    @Cacheable(value = "CommitteeComplain",key = "'getDetail:'+#id")
     public R<ComplainDTO> getDetail(@RequestParam("id")Long id){
         return complainService.getDetail(id);
     }

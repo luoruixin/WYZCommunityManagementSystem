@@ -7,6 +7,8 @@ import com.wyz.entity.FamilyRelationship;
 import com.wyz.service.FamilyRelationshipService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -19,6 +21,7 @@ public class FamilyRelationshipController {
 
     //添加家庭成员
     @PostMapping("/addFamily")
+    @CacheEvict(value = "familyRelationship",key = "'pageR'")
     public R<String> addFamily(@RequestBody FamilyFormDTO familyFormDTO){
         try {
             return familyRelationshipService.addFamily(familyFormDTO);
@@ -30,6 +33,7 @@ public class FamilyRelationshipController {
 
     //删除家庭成员
     @DeleteMapping("/delete")
+    @CacheEvict(value = "familyRelationship",key = "'pageR'")
     public R<String> deleteFamily(@RequestParam Long id){
         try {
             return familyRelationshipService.deleteFamily(id);
@@ -41,6 +45,7 @@ public class FamilyRelationshipController {
 
     //分页查询
     @GetMapping("/page")
+    @Cacheable(value = "familyRelationship",key = "'pageR'")
     public R<Page> pageR(int page,int pageSize){
 
         return familyRelationshipService.pageR(page,pageSize);
@@ -49,6 +54,7 @@ public class FamilyRelationshipController {
 
     //修改家人信息
     @PutMapping("/update")
+    @CacheEvict(value = "familyRelationship",key = "'pageR'")
     public R<String> update(@RequestBody FamilyRelationship familyRelationship){
         try {
             return familyRelationshipService.updateFamily(familyRelationship);

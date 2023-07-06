@@ -11,6 +11,8 @@ import com.wyz.service.ParkingService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,7 @@ public class ParkingController {
 
     //绑定车位
     @PostMapping("/bindParking")
+    @CacheEvict(value = "parking",key = "'pageR'")
     public R<String> bindParking(@RequestBody Parking parking){
 
         return parkingService.bindParking(parking);
@@ -41,6 +44,7 @@ public class ParkingController {
 
     //删除车位
     @DeleteMapping("/delete")
+    @CacheEvict(value = "parking",key = "'pageR'")
     public R<String> delete(@RequestParam String id){
 
         return parkingService.delete(id);
@@ -49,6 +53,7 @@ public class ParkingController {
 
     //分页查询
     @GetMapping("/page")
+    @Cacheable(value = "parking",key = "'pageR'")
     public R<Page> pageR(int page,int pageSize){
         //构造分页构造器对象
         Page<Parking> pageInfo=new Page<>(page,pageSize);

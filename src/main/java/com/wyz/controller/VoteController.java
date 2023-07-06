@@ -5,6 +5,8 @@ import com.wyz.common.R;
 import com.wyz.service.VoteRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -16,19 +18,20 @@ public class VoteController {
 
     //查询现在能参加的投票
     @GetMapping("/pageCan")
-
     public R<Page> pageCan(int page,int pageSize){
         return voteRecordService.pageCan(page,pageSize);
     }
 
     //参与投票
     @PostMapping("/joinVote")
+    @CacheEvict(value = "voteCache",key = "'pageMe'")
     public R<String> joinVote(@RequestParam("id") Long id,@RequestParam("type") Integer type){
         return voteRecordService.joinVote(id,type);
     }
 
     //查看自己参加过的投票
     @GetMapping("/pageMe")
+    @Cacheable(value = "voteCache",key = "'pageMe'")
     public R<Page> pageMe(int page,int pageSize){
         return voteRecordService.pageMe(page,pageSize);
     }

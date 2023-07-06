@@ -2,6 +2,7 @@ package com.wyz.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wyz.common.CustomException;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.dto.HouseJsonByLevel;
@@ -49,11 +50,11 @@ public class ParkingServiceImpl extends ServiceImpl<ParkingMapper, Parking> impl
     @Override
     public R<String> bindParking(Parking parking) {
         if(StrUtil.isEmpty(parking.getParkingNum())||StrUtil.isEmpty(parking.getArea())){
-            return R.error("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         Parking parking1 = query().eq("parking_num", parking.getParkingNum()).eq("area",parking.getArea()).one();
         if(parking1==null){
-            return R.error("未查询到该车位的信息");
+            throw new CustomException("未查询到该车位的信息");
         }
         parking1.setUserId(UserHolder.getUser().getId());
         updateById(parking1);
@@ -63,11 +64,11 @@ public class ParkingServiceImpl extends ServiceImpl<ParkingMapper, Parking> impl
     @Override
     public R<String> delete(String id) {
         if(StrUtil.isEmpty(id)){
-            return R.error("删除无效车位");
+            throw new CustomException("删除无效车位");
         }
         Parking parking = query().eq("id", id).one();
         if(parking==null|| !Objects.equals(parking.getUserId(), UserHolder.getUser().getId())){
-            return R.error("删除无效车位");
+            throw new CustomException("删除无效车位");
         }
         parking.setUserId(null);
         updateById(parking);

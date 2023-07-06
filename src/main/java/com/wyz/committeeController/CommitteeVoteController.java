@@ -2,6 +2,7 @@ package com.wyz.committeeController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wyz.common.R;
+import com.wyz.dto.VoteCountDTO;
 import com.wyz.dto.VoteInfoDTO;
 import com.wyz.entity.VoteInfo;
 import com.wyz.service.VoteInfoService;
@@ -45,6 +46,7 @@ public class CommitteeVoteController {
 
     //删除投票
     @DeleteMapping("/delete")
+    @CacheEvict(value = "committeeVoteCache",key = "'pageR'")
     public R<String> delete(@RequestParam("id")Long id){
         return voteInfoService.deleteVote(id);
     }
@@ -52,9 +54,14 @@ public class CommitteeVoteController {
     //查看投票详情
     // TODO: 添加分析投票的功能
     @GetMapping("/details")
+    @Cacheable(value = "committeeVote",key = "'getDetail:'+#id")
     public R<VoteInfoDTO> details(@RequestParam("id")Long id){
         return voteInfoService.getDetails(id);
     }
 
-
+    //统计投票功能
+    @GetMapping("/count")
+    public R<VoteCountDTO> count(@RequestParam("id")Long id){
+        return voteInfoService.countVote(id);
+    }
 }

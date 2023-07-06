@@ -3,6 +3,7 @@ package com.wyz.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wyz.common.R;
+import com.wyz.dto.VoteCountDTO;
 import com.wyz.dto.VoteInfoDTO;
 import com.wyz.entity.VoteInfo;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,4 +18,6 @@ public interface VoteInfoService extends IService<VoteInfo> {
     R<String> deleteVote(Long id);
 
     R<VoteInfoDTO> getDetails(Long id);
+
+    R<VoteCountDTO> countVote(Long id);
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wyz.common.CustomException;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.dto.UserDTO;
@@ -47,17 +48,17 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
     public R<String> joinVote(Long id, Integer type) {
         VoteInfo voteInfo = voteInfoService.query().eq("id", id).one();
         if(id==null||type==null||voteInfo==null){
-            return R.error("参与无效");
+            throw new CustomException("参与无效");
         }
         UserDTO user = UserHolder.getUser();
         Long userId = user.getId();
         VoteRecord record = query().eq("user_id", userId).eq("v_info_id", id).one();
         if(record!=null){
-            return R.error("您已参加过一次了");
+            throw new CustomException("您已参加过一次了");
         }
         List<House> houseList = houseService.query().eq("user_id", userId).list();
         if(houseList==null){
-            return R.error("您无权参加");
+            throw new CustomException("您无权参加");
         }
 
         //一个人可能买了多套房屋
@@ -68,7 +69,7 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
         }
 
         if(voteInfo.getEndTime().isBefore(LocalDate.now())){
-            return R.error("投票已结束");
+            throw new CustomException("投票已结束");
         }
 
         if(voteInfo.getJoinCode().substring(2,4).equals("00")){
@@ -83,12 +84,12 @@ public class VoteRecordServiceImpl extends ServiceImpl<VoteRecordMapper, VoteRec
                     return R.success("投票成功");
                 }
             }
-            return R.error("您无权参加");
+            throw new CustomException("您无权参加");
         }
         for (String houseNum : houseNumList) {
             //如果没有一个houseNum对应于当前的joincode
             if(!houseNum.startsWith(voteInfo.getJoinCode())){
-                return R.error("您无权参加");
+                throw new CustomException("您无权参加");
             }
         }
 

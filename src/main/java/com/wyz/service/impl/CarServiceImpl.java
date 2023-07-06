@@ -2,6 +2,7 @@ package com.wyz.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wyz.common.CustomException;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.entity.Car;
@@ -19,7 +20,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
         if(StrUtil.isEmpty(car.getNum())
             ||StrUtil.isEmpty(car.getBrand())
             ||StrUtil.isEmpty(car.getVin())){
-            return R.error("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         car.setUserId(UserHolder.getUser().getId());
         car.setCreateTime(LocalDateTime.now());
@@ -30,7 +31,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
     @Override
     public R<String> delete(Long id) {
         if(id==null){
-            return R.error("请重新选择车辆");
+            throw new CustomException("请重新选择车辆");
         }
         removeById(id);
         return R.success("删除成功");
@@ -42,7 +43,7 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements CarSe
                 ||StrUtil.isEmpty(car.getBrand())
                 ||StrUtil.isEmpty(car.getVin())
                 ||car.getId()==null){
-            return R.error("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         updateById(car);
         return R.success("修改成功");

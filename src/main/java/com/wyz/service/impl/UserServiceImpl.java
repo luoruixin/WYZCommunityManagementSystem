@@ -5,6 +5,7 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wyz.common.CustomException;
 import com.wyz.common.R;
 import com.wyz.dto.*;
 import com.wyz.entity.FamilyRelationship;
@@ -53,7 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public R<String> sendCode(String phone, HttpSession session) {
         if(StrUtil.isEmpty(phone)){
-            return R.error("手机号不能为空");
+            throw new CustomException("手机号不能为空");
         }
         //1.校验手机号
         boolean codeInvalid = RegexUtils.isCodeInvalid(phone);
@@ -77,7 +78,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public R<String> loginByPhone(LoginFormDTO loginForm, HttpSession session) {
         if(StrUtil.isEmpty(loginForm.getPhone())||StrUtil.isEmpty(loginForm.getCode())){
-            return R.error("手机号或者验证码为空");
+            throw new CustomException("手机号或者验证码为空");
         }
         //1.校验手机号和验证码
         String phone = loginForm.getPhone();
@@ -85,7 +86,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if(!verificatePhoneAndCode(phone,code)){ //这里采用反向校验
             //3.不一致，报错
-            return R.error("验证码错误或手机号格式错误");
+            throw new CustomException("验证码错误或手机号格式错误");
         }
         //4.一致,根据手机号查询用户
         User user = query().eq("phone", phone).one();
@@ -93,7 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //5.判断用户是否存在
         if(user==null){
             // 6.不存在
-            return R.error("该用户不存在，请注册");
+            throw new CustomException("该用户不存在，请注册");
         }
 
         //7.存在，用户信息到redis
@@ -121,7 +122,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public R<String> loginByNickName(LoginFormDTO loginForm, HttpSession session) {
         if(StrUtil.isEmpty(loginForm.getNickname())||StrUtil.isEmpty(loginForm.getPassword())){
-            return R.error("用户名或者密码为空");
+            throw new CustomException("用户名或者密码为空");
         }
         String nickname=loginForm.getNickname();
         String password=loginForm.getPassword();
@@ -131,11 +132,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //5.判断用户是否存在
         if(user==null){
             // 6.不存在
-            return R.error("该用户不存在，请注册");
+            throw new CustomException("该用户不存在，请注册");
         }
         //判断密码是否正确(加密后再对比)
         if (!password.equals(user.getPassword())) {
-            return R.error("密码不正确");
+            throw new CustomException("密码不正确");
         }
         //7.存在，用户信息到redis
         UserDTO userDTO=new UserDTO();
@@ -165,7 +166,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 ||StrUtil.isEmpty(registerForm.getNickname())
                 ||StrUtil.isEmpty(registerForm.getPassword())
                 ||StrUtil.isEmpty(registerForm.getCode())){
-            return R.error("请将信息补充完整");
+            throw new CustomException("请将信息补充完整");
         }
 
         //1.校验手机号和验证码
@@ -174,16 +175,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if(!verificatePhoneAndCode(phone,code)){ //这里采用反向校验
             //3.不一致，报错
-            return R.error("验证码错误或手机号错误");
+            throw new CustomException("验证码错误或手机号错误");
         }
 
         if(query().eq("username",registerForm.getNickname()).one()!=null){
-            return R.error("该用户名已经被注册，请更换用户名");
+            throw new CustomException("该用户名已经被注册，请更换用户名");
         }
         //4.一致,根据手机号查询用户
         User user = query().eq("phone", phone).one();
         if(user!=null){
-            return R.error("该手机号已经被绑定");
+            throw new CustomException("该手机号已经被绑定");
         }else {
             // 6.不存在,注册
             user=new User();
@@ -201,7 +202,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(StrUtil.isEmpty(foundPasswordFormDTO.getPhone())
                 ||StrUtil.isEmpty(foundPasswordFormDTO.getCode())
                 ||StrUtil.isEmpty(foundPasswordFormDTO.getNewPassword())){
-            return R.error("请将信息补充完整");
+            throw new CustomException("请将信息补充完整");
         }
 
         //1.校验手机号和验证码
@@ -210,14 +211,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         if(!verificatePhoneAndCode(phone,code)){ //这里采用反向校验
             //3.不一致，报错
-            return R.error("验证码错误或手机号格式错误");
+            throw new CustomException("验证码错误或手机号格式错误");
         }
         //4.一致,根据手机号查询用户
         User user = query().eq("phone", phone).one();
 
         //用户不存在
         if(user==null){
-            return R.error("用户不存在");
+            throw new CustomException("用户不存在");
         }
         user.setPassword(foundPasswordFormDTO.getNewPassword());
         updateById(user);
@@ -227,7 +228,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public R<String> updatePwd(UpdatePwdFormDTO updatePwdFormDTO, HttpSession session) {
         if(StrUtil.isEmpty(updatePwdFormDTO.getOldPassword())||StrUtil.isEmpty(updatePwdFormDTO.getNewPassword())){
-            return R.error("请将信息补充完整");
+            throw new CustomException("请将信息补充完整");
         }
         String oldPassword = updatePwdFormDTO.getOldPassword();
         //4.查询用户
@@ -236,11 +237,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         //用户不存在
         if(user==null){
-            return R.error("用户不存在");
+            throw new CustomException("用户不存在");
         }
         //判断密码是否正确
         if(!oldPassword.equals(user.getPassword())){
-            return R.error("原密码输入错误");
+            throw new CustomException("原密码输入错误");
         }
         user.setPassword(updatePwdFormDTO.getNewPassword());
         updateById(user);
@@ -252,16 +253,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(StrUtil.isEmpty(updatePhoneFormDTO.getOldPhone())
             ||StrUtil.isEmpty(updatePhoneFormDTO.getNewPhone())
             ||StrUtil.isEmpty(updatePhoneFormDTO.getCode())){
-            return R.error("请将信息填完整");
+            throw new CustomException("请将信息填完整");
         }
         User user = query().eq("phone", updatePhoneFormDTO.getOldPhone()).one();
         UserDTO user1 = UserHolder.getUser();
         if(user==null|| !Objects.equals(user1.getId(), user.getId())){
-            return R.error("您输入的原手机号有误");
+            throw new CustomException("您输入的原手机号有误");
         }
         User user2 = query().eq("phone", updatePhoneFormDTO.getNewPhone()).one();
         if(user2!=null){
-            return R.error("新手机号已经被绑定");
+            throw new CustomException("新手机号已经被绑定");
         }
         user.setPhone(updatePhoneFormDTO.getNewPhone());
         updateById(user);
@@ -276,10 +277,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String realName=realNameFormDTO.getName();
         String idCard=realNameFormDTO.getIdCard();
         if(StrUtil.isEmpty(realName)||StrUtil.isEmpty(idCard)){
-            return R.error("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         if(query().eq("id_card", idCard).one()!=null){
-            return R.error("该身份证已经被绑定");
+            throw new CustomException("该身份证已经被绑定");
         }
         UserDTO userDTO=UserHolder.getUser();
         User user=new User();
@@ -308,7 +309,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             //只需要将userRecord
             if(userRecord1.getOutTime()!=null){
                 //这里做二次校验
-                return R.error("该身份证已经被绑定");
+                throw new CustomException("该身份证已经被绑定");
             }
             userRecord1.setOutTime(null);
             userRecord1.setUsername(user.getNickname());
@@ -353,7 +354,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public R<String> writeOff() {
         UserDTO userDTO = UserHolder.getUser();
         if(userDTO==null){
-            return R.error("请先登录");
+            throw new CustomException("请先登录");
         }
         User user=query().eq("id",userDTO.getId()).one();
         UserRecord userRecord = userRecordService.query().eq("id_card", user.getIdCard()).one();
@@ -372,7 +373,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (PermissionJudge.judgeAuthority(type,examine)>0) {
             return R.success("欢迎进入居民入口");
         }
-        return R.error("您没有权限进入居民入口");
+        throw new CustomException("您没有权限进入居民入口");
     }
 
     @Override
@@ -383,7 +384,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (PermissionJudge.judgeAuthority(type,examine)>1) {
             return R.success("欢迎");
         }
-        return R.error("您没有权限");
+        throw new CustomException("您没有权限");
     }
 
     @Override
@@ -394,7 +395,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (PermissionJudge.judgeAuthority(type,examine)>2) {
             return R.success("欢迎");
         }
-        return R.error("您没有权限");
+        throw new CustomException("您没有权限");
     }
 
     //-----------------------------------工具类-----------------------------------------------

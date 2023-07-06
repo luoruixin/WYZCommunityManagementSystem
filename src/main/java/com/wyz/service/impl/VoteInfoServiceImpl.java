@@ -10,12 +10,14 @@ import com.wyz.common.CustomException;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.dto.UserDTO;
+import com.wyz.dto.VoteCountDTO;
 import com.wyz.dto.VoteInfoDTO;
 import com.wyz.entity.House;
 import com.wyz.entity.User;
 import com.wyz.entity.VoteInfo;
 import com.wyz.entity.VoteRecord;
 import com.wyz.mapper.VoteInfoMapper;
+import com.wyz.mapper.VoteRecordMapper;
 import com.wyz.service.HouseService;
 import com.wyz.service.UserService;
 import com.wyz.service.VoteInfoService;
@@ -41,6 +43,10 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
     private VoteRecordService voteRecordService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private VoteRecordMapper voteRecordMapper;
+    @Autowired
+    private VoteInfoService voteInfoService;
     @Override
     @Transactional
     public R<String> publish(VoteInfoDTO voteInfoDto) {
@@ -49,7 +55,7 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
             ||StrUtil.isEmpty(voteInfoDto.getTitle())
             ||StrUtil.isEmpty(voteInfoDto.getApart())
             ||StrUtil.isEmpty(voteInfoDto.getCategory())){
-            return R.error("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         voteInfoDto.setJoinCode(null);
         String apart = voteInfoDto.getApart();
@@ -126,7 +132,7 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
     @Override
     public R<String> deleteVote(Long id) {
         if(id==null){
-            return R.error("删除无效");
+            throw new CustomException("删除无效");
         }
         removeById(id);
         LambdaQueryWrapper<VoteRecord> queryWrapper=new LambdaQueryWrapper<>();
@@ -139,7 +145,7 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
     @Transactional
     public R<VoteInfoDTO> getDetails(Long id) {
         if(id==null){
-            return R.error("无效");
+            throw new CustomException("无效");
         }
         VoteInfo voteInfo = query().eq("id", id).one();
         VoteInfoDTO voteInfoDTO=new VoteInfoDTO();
@@ -148,5 +154,36 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         User user = userService.getById(createUserId);
         voteInfoDTO.setName(user.getName());
         return R.success(voteInfoDTO);
+    }
+
+    @Override
+    @Transactional
+    public R<VoteCountDTO> countVote(Long id) {
+        if(id==null){
+            throw new CustomException("id为空");
+        }
+        VoteInfo voteInfo = query().eq("id", id).one();
+        if(voteInfo==null){
+            throw new CustomException("投票不存在");
+        }
+        String joinCode = voteInfo.getJoinCode();
+        //查询楼栋总人数，未参与投票则视为弃权
+        Long totalNum = Long.valueOf(houseService.query().likeRight("num", joinCode).isNotNull("user_id").count());
+        Long favourNum = voteRecordMapper.getFavourNum(id);
+        Long opponentNum=voteRecordMapper.getOpponentNum(id);
+        Long abstentionNum=totalNum-favourNum-opponentNum;
+        Double favourRatio=favourNum.doubleValue()/totalNum;
+        Double opponentRatio=opponentNum.doubleValue()/totalNum;
+        Double abstentionRatio=abstentionNum.doubleValue()/totalNum;
+
+        VoteCountDTO voteCountDTO=new VoteCountDTO();
+        voteCountDTO.setTotalNum(totalNum);
+        voteCountDTO.setFavourNum(favourNum);
+        voteCountDTO.setOpponentNum(opponentNum);
+        voteCountDTO.setAbstentionNum(abstentionNum);
+        voteCountDTO.setFavourRatio(favourRatio);
+        voteCountDTO.setOpponentRatio(opponentRatio);
+        voteCountDTO.setAbstentionRatio(abstentionRatio);
+        return R.success(voteCountDTO);
     }
 }

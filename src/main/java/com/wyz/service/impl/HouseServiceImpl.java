@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wyz.common.CustomException;
 import com.wyz.dto.HouseJsonByLevel;
 import com.wyz.common.R;
 import com.wyz.dto.BindHouseFormDTO;
@@ -36,19 +37,20 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     @Override
     @Transactional  //这里要操纵house和houseRecord两张表
     public R<String> bindHouse(BindHouseFormDTO bindHouseFormDTO) {
+        String area = bindHouseFormDTO.getArea();
         if(StrUtil.isEmpty(bindHouseFormDTO.getArea())
             ||StrUtil.isEmpty(bindHouseFormDTO.getArea())
             ||StrUtil.isEmpty(bindHouseFormDTO.getCell())
             ||StrUtil.isEmpty(bindHouseFormDTO.getHouseCode())
             ||StrUtil.isEmpty(bindHouseFormDTO.getRelation())){
-            return R.error("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         House house = query().eq("area", bindHouseFormDTO.getArea())
                 .eq("apart", bindHouseFormDTO.getApart())
                 .eq("cell", bindHouseFormDTO.getCell())
                 .eq("house_code", bindHouseFormDTO.getHouseCode()).one();
         if(house==null){
-            return R.error("没有该房屋");
+            throw new CustomException("没有该房屋");
         }
         house.setUserId(UserHolder.getUser().getId());
         house.setRelation(bindHouseFormDTO.getRelation());
@@ -134,14 +136,14 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
     @Transactional
     public R<String> deleteHouse(String houseId) {
         if(StrUtil.isEmpty(houseId)){
-            return R.error("id为空");
+            throw new CustomException("id为空");
         }
         House house = query().eq("id", houseId).one();
         if(house.getUserId()==null){
-            return R.error("当前房屋还未进行绑定");
+            throw new CustomException("当前房屋还未进行绑定");
         }
         if(!Objects.equals(house.getUserId(), UserHolder.getUser().getId())){
-            return R.error("该房屋并不属于您");
+            throw new CustomException("该房屋并不属于您");
         }
         house.setUserId(null);
         house.setRelation(null);
@@ -170,7 +172,7 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 
             Long ownerId = familyRelationshipService.query().eq("family_id", currentUser.getId()).one().getUserId();
             if(ownerId==null){
-                return R.error(null);
+                throw new CustomException(null);
             }
             queryWrapper.eq(House::getUserId,ownerId)
                     .isNotNull(House::getUserId);

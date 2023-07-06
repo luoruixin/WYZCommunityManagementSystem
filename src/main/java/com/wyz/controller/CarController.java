@@ -10,6 +10,8 @@ import com.wyz.service.CarService;
 import com.wyz.service.ParkingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ public class CarController {
 
     //添加车位
     @PostMapping("/add")
+    @CacheEvict(value = "car",key = "'pageR'")
     public R<String> add(@RequestBody Car car){
 
         return carService.add(car);
@@ -30,6 +33,7 @@ public class CarController {
 
     //删除车辆
     @DeleteMapping("/delete")
+    @CacheEvict(value = "car",key = "'pageR'")
     public R<String> delete(@RequestParam Long id){
         carService.removeById(id);
         return R.success("删除成功");
@@ -38,6 +42,7 @@ public class CarController {
 
     //分页查询
     @GetMapping("/page")
+    @Cacheable(value = "car",key = "'pageR'")
     public R<Page> pageR(int page,int pageSize){
         //构造分页构造器对象
         Page<Car> pageInfo=new Page<>(page,pageSize);
@@ -54,6 +59,7 @@ public class CarController {
 
     //修改车辆信息
     @PutMapping("/update")
+    @CacheEvict(value = "car",key = "'pageR'")
     public R<String> update(@RequestBody Car car){
         return carService.updateCar(car);
     }

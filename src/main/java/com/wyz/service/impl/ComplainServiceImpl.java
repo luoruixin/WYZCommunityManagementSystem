@@ -39,10 +39,10 @@ public class ComplainServiceImpl extends ServiceImpl<ComplainMapper, Complain> i
         List<Complain> complainList = query().eq("user_id", UserHolder.getUser().getId()).like("create_time", localDate).list();
         if (complainList.size()>2){
             //防止一天内投诉的问题过多
-            return R.error("您已经达到今天的上限");
+            throw new CustomException("您已经达到今天的上限");
         }
         if(StrUtil.isEmpty(content)||StrUtil.isEmpty(title)){
-            return R.error("请将信息填充完整");
+            throw new CustomException("请将信息填充完整");
         }
         complain.setUserId(UserHolder.getUser().getId());
         complain.setCreateTime(LocalDateTime.now());
