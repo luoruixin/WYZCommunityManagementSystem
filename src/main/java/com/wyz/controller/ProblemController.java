@@ -26,12 +26,9 @@ public class ProblemController {
 //            @CacheEvict(value = "committeeProblemCache:pageR", key = "'pageR'")
     })
     public R<String> report(@RequestBody Problem problem){
-        try {
-            return problemService.report(problem);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("上报失败");
-        }
+
+        return problemService.report(problem);
+
     }
 
     //问题分页查询
@@ -47,12 +44,9 @@ public class ProblemController {
     @PutMapping("/update")
     @CacheEvict(value = "problemCache:pageMe",allEntries = true)
     public R<String> update(@RequestBody Problem problem){
-        try {
-            return problemService.updateProblem(problem);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("修改失败");
-        }
+
+        return problemService.updateProblem(problem);
+
     }
 
     //删除问题
@@ -62,12 +56,9 @@ public class ProblemController {
             @CacheEvict(value = "committeeProblemCache:pageR", allEntries = true)
     })
     public R<String> delete(@RequestParam("id") Long id){
-        try {
-            return problemService.deleteProblem(id);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("更新失败");
-        }
+
+        return problemService.deleteProblem(id);
+
     }
 
 }
