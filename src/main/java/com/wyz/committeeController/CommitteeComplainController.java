@@ -19,7 +19,7 @@ public class CommitteeComplainController {
     @Autowired
     private ComplainService complainService;
     @GetMapping("/pageAll")
-    @Cacheable(value = "CommitteeComplain:pageAll",key = "#page+#pageSize",condition = "#condition==null")
+    @Cacheable(value = "CommitteeComplain:pageAll",key = "#page+'-'+#pageSize",condition = "#condition==null")
     public R<Page> pageAll(int page,int pageSize,String condition){
         return complainService.pageAll(page,pageSize,condition);
     }

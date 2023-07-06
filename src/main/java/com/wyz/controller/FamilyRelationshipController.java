@@ -45,7 +45,7 @@ public class FamilyRelationshipController {
 
     //分页查询
     @GetMapping("/page")
-    @Cacheable(value = "familyRelationship:pageR",key = "#page+#pageSize")
+    @Cacheable(value = "familyRelationship:pageR",key = "#page+'-'+#pageSize+'-'+T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
     public R<Page> pageR(int page,int pageSize){
 
         return familyRelationshipService.pageR(page,pageSize);

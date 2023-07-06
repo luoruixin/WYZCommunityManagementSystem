@@ -31,7 +31,7 @@ public class VoteController {
 
     //查看自己参加过的投票
     @GetMapping("/pageMe")
-    @Cacheable(value = "voteCache:pageMe",key = "#page+#pageSize")
+    @Cacheable(value = "voteCache:pageMe",key = "#page+'-'+#pageSize+'-'+T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
     public R<Page> pageMe(int page,int pageSize){
         return voteRecordService.pageMe(page,pageSize);
     }

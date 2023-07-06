@@ -53,7 +53,7 @@ public class ParkingController {
 
     //分页查询
     @GetMapping("/page")
-    @Cacheable(value = "parking:pageR",key = "#page+#pageSize")
+    @Cacheable(value = "parking:pageR",key = "#page+'-'+#pageSize+'-'+T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
     public R<Page> pageR(int page,int pageSize){
         //构造分页构造器对象
         Page<Parking> pageInfo=new Page<>(page,pageSize);

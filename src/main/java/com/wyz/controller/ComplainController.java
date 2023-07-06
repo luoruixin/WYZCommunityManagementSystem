@@ -28,7 +28,7 @@ public class ComplainController {
     }
 
     @GetMapping("/pageMe")
-    @Cacheable(value = "complain:pageMe",key = "#page+#pageSize")
+    @Cacheable(value = "complain:pageMe",key = "#page+'-'+#pageSize+'-'+T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
     public R<Page> pageMe(int page,int pageSize){
         return complainService.pageMe(page,pageSize);
     }

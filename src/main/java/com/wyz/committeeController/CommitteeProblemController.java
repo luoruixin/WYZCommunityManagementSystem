@@ -20,7 +20,7 @@ public class CommitteeProblemController {
     @Autowired
     private ProblemService problemService;
     @GetMapping("/page")
-    @Cacheable(value = "committeeProblemCache:pageR",key = "#page+#pageSize",condition = "#condition==null")
+    @Cacheable(value = "committeeProblemCache:pageR",key = "#page+'-'+#pageSize",condition = "#condition==null")
     public R<Page> pageR(int page,int pageSize,String condition){
         return problemService.pageAll(page,pageSize,condition);
     }

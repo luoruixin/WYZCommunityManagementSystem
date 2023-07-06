@@ -32,7 +32,7 @@ public class CommitteeVoteController {
 
     //投票分页查询
     @GetMapping("/page")
-    @Cacheable(value = "committeeVoteCache:pageR",key = "#page+#pageSize",unless = "#result==null||#condition!=null")
+    @Cacheable(value = "committeeVoteCache:pageR",key = "#page+'-'+#pageSize",unless = "#result==null||#condition!=null")
     public R<Page> pageR(int page,int pageSize,String condition){
         R<Page> r = voteInfoService.pageR(page, pageSize, condition);
         return r;

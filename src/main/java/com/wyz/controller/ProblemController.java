@@ -33,7 +33,7 @@ public class ProblemController {
 
     //问题分页查询
     @GetMapping("/pageMe")
-    @Cacheable(value = "problemCache:pageMe",key = "#page+#pageSize")
+    @Cacheable(value = "problemCache:pageMe",key = "#page+'-'+#pageSize+'-'+T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
     public R<Page> pageMe(int page,int pageSize){
 
         return problemService.pageMe(page,pageSize);

@@ -53,9 +53,9 @@ public class HouseController {
 
     //分页查询
     @GetMapping("/page")
-    @Cacheable(value = "house:pageR",key = "#page+#pageSize")
+    @Cacheable(value = "house:pageR",key = "#page+'-'+#pageSize+'-'+T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
     public R<Page> pageR(int page, int pageSize){
-
+        Long id = UserHolder.getUser().getId();
         return houseService.pageR(page,pageSize);
 
     }
