@@ -26,12 +26,7 @@ public class CommitteeVoteController {
     @PostMapping("/publish")
     @CacheEvict(value = "committeeVoteCache",key = "'pageR'")
     public R<String> publish(@RequestBody VoteInfoDTO voteInfoDTO){
-        try {
-            return voteInfoService.publish(voteInfoDTO);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error("网络繁忙，请重试");
-        }
+        return voteInfoService.publish(voteInfoDTO);
     }
 
     //投票分页查询

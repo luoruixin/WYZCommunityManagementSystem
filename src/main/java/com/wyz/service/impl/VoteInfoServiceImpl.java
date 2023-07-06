@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wyz.common.CustomException;
 import com.wyz.common.R;
 import com.wyz.common.UserHolder;
 import com.wyz.dto.UserDTO;
@@ -60,16 +61,16 @@ public class VoteInfoServiceImpl extends ServiceImpl<VoteInfoMapper, VoteInfo> i
         //apartList是业委会成员所在小区的所有楼栋
         List<String> apartList = houseService.query().eq("area", area).list().stream().map(a -> a.getApart()).collect(Collectors.toList());
         if(!apartList.contains(apart)){
-            return R.error("您选择的楼栋无效");
+            throw new CustomException("您选择的楼栋无效");
         }
         if(!apart.contains("全部")){
             House house = houseService.query().eq("apart", apart).last("limit 1").one();
             if(house==null){
-                return R.error("您选择的楼栋无效");
+                throw new CustomException("您选择的楼栋无效");
             }
             String num = house.getNum();
             if(StrUtil.isEmpty(num)){
-                return R.error("发布无效");
+                throw new CustomException("发布无效");
             }
             apartNum = num.substring(2, 4);
         }else {
