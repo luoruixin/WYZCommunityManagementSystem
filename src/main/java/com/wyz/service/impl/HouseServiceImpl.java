@@ -126,8 +126,6 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
 
             // Add the houseCode to the houseList
             cell.getHouseCodeList().add(houseCode);
-
-
         }
         return R.success(houseJsonByLevelList);
     }
@@ -148,6 +146,15 @@ public class HouseServiceImpl extends ServiceImpl<HouseMapper, House> implements
         house.setUserId(null);
         house.setRelation(null);
         updateById(house);
+
+        House house1 = query().eq("user_id", UserHolder.getUser().getId()).one();
+        if(house1==null){
+            //说明刚刚删除的是最后一栋房屋
+            User user = userService.getById(UserHolder.getUser().getId());
+            user.setExamine(0);
+            user.setType(1);
+            userService.updateById(user);
+        }
 
         //在house_record表中填写退房时间
         HouseRecord houseRecord=houseRecordService.query().eq("house_id",house.getId()).one();
