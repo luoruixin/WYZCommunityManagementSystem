@@ -34,7 +34,7 @@ public class CommitteeVoteController {
 
     //查询业委会成员所在小区的所有楼栋
     @GetMapping("/getAparts")
-    @Cacheable(value = "committeeVoteCache:getAparts",key = "T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
+//    @Cacheable(value = "committeeVoteCache:getAparts",key = "T(java.lang.String).valueOf(T(com.wyz.common.UserHolder).getUser().getId())")
     public R<List<String>> getAparts(){
         return voteInfoService.getAparts();
     }
